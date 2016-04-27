@@ -12,6 +12,7 @@
 		6709668A1CCE3D5B00EC5958 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 670966881CCE3D5B00EC5958 /* Main.storyboard */; };
 		6709669E1CCE4C0E00EC5958 /* JMPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6709669D1CCE4C0E00EC5958 /* JMPlayerView.m */; };
 		670966A11CCE4FF800EC5958 /* JMPlayerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 670966A01CCE4FF800EC5958 /* JMPlayerController.m */; };
+		677BD5601CD0A7CA00873C50 /* UIView+JMAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 677BD55F1CD0A7CA00873C50 /* UIView+JMAdd.m */; };
 		67D2F3D41CCFBD7700D35769 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 67D2F3D31CCFBD7700D35769 /* Default-568h@2x.png */; };
 		67D2F3DF1CCFE17E00D35769 /* ElephantSeals.mov in Resources */ = {isa = PBXBuildFile; fileRef = 67D2F3DE1CCFE17E00D35769 /* ElephantSeals.mov */; };
 /* End PBXBuildFile section */
@@ -27,6 +28,8 @@
 		6709669D1CCE4C0E00EC5958 /* JMPlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMPlayerView.m; sourceTree = "<group>"; };
 		6709669F1CCE4FF800EC5958 /* JMPlayerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMPlayerController.h; sourceTree = "<group>"; };
 		670966A01CCE4FF800EC5958 /* JMPlayerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMPlayerController.m; sourceTree = "<group>"; };
+		677BD55E1CD0A7CA00873C50 /* UIView+JMAdd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+JMAdd.h"; sourceTree = "<group>"; };
+		677BD55F1CD0A7CA00873C50 /* UIView+JMAdd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+JMAdd.m"; sourceTree = "<group>"; };
 		67D2F3D31CCFBD7700D35769 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		67D2F3D91CCFD42300D35769 /* JMPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JMPlayer.h; sourceTree = "<group>"; };
 		67D2F3DA1CCFD55B00D35769 /* JMPlayerMacro.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JMPlayerMacro.h; sourceTree = "<group>"; };
@@ -88,8 +91,8 @@
 		670966961CCE3DB200EC5958 /* JMPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				677BD55D1CD0A7B100873C50 /* Categories */,
 				670966981CCE472500EC5958 /* Assets */,
-				670966991CCE472500EC5958 /* Config */,
 				6709669B1CCE472500EC5958 /* Views */,
 				67D2F3DA1CCFD55B00D35769 /* JMPlayerMacro.h */,
 				67D2F3D91CCFD42300D35769 /* JMPlayer.h */,
@@ -104,13 +107,6 @@
 			path = Assets;
 			sourceTree = "<group>";
 		};
-		670966991CCE472500EC5958 /* Config */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Config;
-			sourceTree = "<group>";
-		};
 		6709669B1CCE472500EC5958 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -118,6 +114,15 @@
 				6709669D1CCE4C0E00EC5958 /* JMPlayerView.m */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		677BD55D1CD0A7B100873C50 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				677BD55E1CD0A7CA00873C50 /* UIView+JMAdd.h */,
+				677BD55F1CD0A7CA00873C50 /* UIView+JMAdd.m */,
+			);
+			path = Categories;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -194,6 +199,7 @@
 				6709669E1CCE4C0E00EC5958 /* JMPlayerView.m in Sources */,
 				670966841CCE3D5B00EC5958 /* AppDelegate.m in Sources */,
 				670966811CCE3D5B00EC5958 /* main.m in Sources */,
+				677BD5601CD0A7CA00873C50 /* UIView+JMAdd.m in Sources */,
 				670966A11CCE4FF800EC5958 /* JMPlayerController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

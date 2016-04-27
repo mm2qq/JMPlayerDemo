@@ -8,6 +8,7 @@
 
 #import "JMPlayerView.h"
 #import "JMPlayerMacro.h"
+#import "UIView+JMAdd.h"
 #import <AVFoundation/AVFoundation.h>
 
 static int JMPlayerViewKVOContext = 0;
@@ -34,9 +35,8 @@ static int JMPlayerViewKVOContext = 0;
 
 #pragma mark - Lifecycle
 
-- (instancetype)initWithFrame:(CGRect)frame
-                      andURLs:(NSArray<NSURL *> *)URLs {
-    self = [super initWithFrame:frame];
+- (instancetype)initWithURLs:(NSArray<NSURL *> *)URLs {
+    self = [super init];
 
     if (self) {
         _URLs = URLs.copy;
@@ -47,14 +47,13 @@ static int JMPlayerViewKVOContext = 0;
     return self;
 }
 
-- (void)layoutSubviews {
-    _progressView.center = _slider.center;
-
-    [super layoutSubviews];
-}
-
 - (void)dealloc {
     [self _removePlayerObserver];
+}
+
+- (void)layoutSubviews {
+    [self _layout];
+    [super layoutSubviews];
 }
 
 #pragma mark - Public
@@ -85,6 +84,9 @@ static int JMPlayerViewKVOContext = 0;
         self.slider.enabled = isValidDuration;
     } else if ([keyPath isEqualToString:@"player.currentItem.loadedTimeRanges"]) {
         NSArray *loadedTimeRages = _player.currentItem.loadedTimeRanges;
+
+        if (loadedTimeRages.count < 1) return;
+
         CMTimeRange timeRage = [(NSValue *)loadedTimeRages[0] CMTimeRangeValue];
         double start = CMTimeGetSeconds(timeRage.start);
         double duration = CMTimeGetSeconds(timeRage.duration);
@@ -111,9 +113,7 @@ static int JMPlayerViewKVOContext = 0;
 
 - (UISlider *)slider {
     if (!_slider) {
-        _slider = [[UISlider alloc] initWithFrame:(CGRect){
-            (CGPoint){self.frame.origin.x, self.frame.origin.y + 24.f},
-            (CGSize){self.frame.size.width, 24.f}}];
+        _slider = [UISlider new];
         _slider.minimumTrackTintColor = [UIColor redColor];
         _slider.maximumTrackTintColor = [UIColor colorWithRed:0.3 green:0.3 blue:0.3 alpha:0.6];
 
@@ -127,9 +127,7 @@ static int JMPlayerViewKVOContext = 0;
 
 - (UIProgressView *)progressView {
     if (!_progressView) {
-        _progressView = [[UIProgressView alloc] initWithFrame:(CGRect){
-            (CGPoint){self.frame.origin.x + 2.f, self.frame.origin.y + 24.f},
-            (CGSize){self.frame.size.width - 4.f, 24.f}}];
+        _progressView = [UIProgressView new];
         _progressView.progressTintColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.3];
         _progressView.trackTintColor = [UIColor clearColor];
     }
@@ -175,14 +173,31 @@ static int JMPlayerViewKVOContext = 0;
 
     _player = [AVQueuePlayer queuePlayerWithItems:_playerItems];
     _playerLayer = [AVPlayerLayer playerLayerWithPlayer:_player];
-    _playerLayer.frame = self.layer.frame;
 
     [self.layer addSublayer:_playerLayer];
-
     [self addSubview:self.progressView];
     [self addSubview:self.slider];
 
     [self _addPlayerObserver];
+}
+
+- (void)_layout {
+    if (!UIDeviceOrientationIsPortrait([UIDevice currentDevice].orientation)) {
+        self.frame = self.superview.frame;
+    } else {
+        self.frame = self.superview.frame;
+        self.height = self.superview.width * 9.f / 16.f;
+        self.center = self.superview.center;
+    }
+
+    _playerLayer.frame = self.bounds;
+    _slider.width = self.width;
+    _slider.height = 24.f;
+    _slider.bottom = self.height;
+
+    _progressView.width = _slider.width - 4.f;
+    _progressView.height = _slider.height;
+    _progressView.center = _slider.center;
 }
 
 - (void)_addPlayerObserver {

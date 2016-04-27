@@ -15,14 +15,13 @@
 //@property (nonatomic, copy) void (^currentTimeCallback)(double currentTimeSecond);
 
 /**
- *  Initialize a player view with frame and video URL
+ *  Initialize a player view with video URL
  *
- *  @param frame The frame of player view
  *  @param URLs  The array of video URL
  *
  *  @return Instance of player view
  */
-- (instancetype)initWithFrame:(CGRect)frame andURLs:(NSArray<NSURL *> *)URLs;
+- (instancetype)initWithURLs:(NSArray<NSURL *> *)URLs;
 
 /**
  *  Video play

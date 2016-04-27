@@ -8,6 +8,7 @@
 
 #import "JMPlayerController.h"
 #import "JMPlayerView.h"
+#import "UIView+JMAdd.h"
 
 @interface JMPlayerController ()
 
@@ -22,10 +23,12 @@
 
     NSURL *URL1 = [[NSBundle mainBundle] URLForResource:@"ElephantSeals" withExtension:@"mov"];
     NSURL *URL2 = [NSURL URLWithString:@"https://movielalavideos.blob.core.windows.net/videos/563cb51788b8c6db4b000376.mp4"];
-    _playerView = [[JMPlayerView alloc] initWithFrame:self.view.frame andURLs:@[URL2, URL1]];
+    _playerView = [[JMPlayerView alloc] initWithURLs:@[URL1, URL2]];
     [self.view addSubview:_playerView];
+}
 
-    [_playerView play];
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    [self.view layoutIfNeeded];
 }
 
 @end
