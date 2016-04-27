@@ -29,7 +29,7 @@
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
-    [self.view layoutIfNeeded];
+    [_playerWrapperView setNeedsDisplay];
 }
 
 @end

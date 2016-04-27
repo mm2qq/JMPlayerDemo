@@ -8,6 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+typedef NS_ENUM(NSUInteger, JMPlayerStatus) {
+    JMPlayerStatusBuffering,
+    JMPlayerStatusPlaying,
+    JMPlayerStatusPaused,
+};
+
 @interface JMPlayerView : UIView
 
 @property (nonatomic, copy) NSArray *URLs;

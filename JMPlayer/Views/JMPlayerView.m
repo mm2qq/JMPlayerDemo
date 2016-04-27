@@ -14,6 +14,7 @@
 static int JMPlayerViewKVOContext = 0;
 
 @interface JMPlayerView () {
+    JMPlayerStatus _playerStatus;
     id _timeObserverToken;
     __weak UIView *_previousSuperview;
 }
@@ -29,6 +30,8 @@ static int JMPlayerViewKVOContext = 0;
 @property (nonatomic) UIProgressView *progressView;
 
 @property (nonatomic) CMTime currentTime;
+
+@property (nonatomic) UIActivityIndicatorView *activityIndicator;
 
 @end
 
@@ -60,11 +63,17 @@ static int JMPlayerViewKVOContext = 0;
 #pragma mark - Public
 
 - (void)play {
-    [_player play];
+    if (_playerStatus != JMPlayerStatusPlaying) {
+        [_player play];
+        _playerStatus = JMPlayerStatusPlaying;
+    }
 }
 
 - (void)pause {
-    [_player pause];
+    if (_playerStatus != JMPlayerStatusPaused) {
+        [_player pause];
+        _playerStatus = JMPlayerStatusPaused;
+    }
 }
 
 #pragma mark - KVO
@@ -94,14 +103,21 @@ static int JMPlayerViewKVOContext = 0;
         double loaded = start + duration;
 
         self.progressView.progress = loaded / CMTimeGetSeconds(_player.currentItem.duration);
-    }// else if ([keyPath isEqualToString:@"currentItem.playbackBufferEmpty"]) {
-    //        NSLog(@"2");
-    //    } else if ([keyPath isEqualToString:@"currentItem.playbackLikelyToKeepUp"]) {
-    //        NSLog(@"3");
-    //    }
+
+        // if buffer duration is more than 10 seconds and not in pasued, go on playing
+        if (duration > 10.0 && _playerStatus != JMPlayerStatusPaused) {
+            [self.activityIndicator stopAnimating];
+            [self play];
+        }
+    } else if ([keyPath isEqualToString:@"player.currentItem.playbackBufferEmpty"]) {
+        _playerStatus = JMPlayerStatusBuffering;
+        [self.activityIndicator startAnimating];
+    }
 }
 
 - (void)sliderValueChanged:(UISlider *)slider {
+    // change player status as slider value changed
+    _playerStatus = JMPlayerStatusBuffering;
     self.currentTime = CMTimeMakeWithSeconds(slider.value, 1000);
 }
 
@@ -159,6 +175,14 @@ static int JMPlayerViewKVOContext = 0;
      }];
 }
 
+- (UIActivityIndicatorView *)activityIndicator {
+    if (!_activityIndicator) {
+        _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    }
+
+    return _activityIndicator;
+}
+
 #pragma mark - Private
 
 - (void)_setupPlayer {
@@ -174,10 +198,12 @@ static int JMPlayerViewKVOContext = 0;
 
     _player = [AVQueuePlayer queuePlayerWithItems:_playerItems];
     _playerLayer = [AVPlayerLayer playerLayerWithPlayer:_player];
+    _playerStatus = JMPlayerStatusPaused;
 
     [self.layer addSublayer:_playerLayer];
     [self addSubview:self.progressView];
     [self addSubview:self.slider];
+    [self addSubview:self.activityIndicator];
 
     [self _addPlayerObserver];
 }
@@ -214,6 +240,8 @@ static int JMPlayerViewKVOContext = 0;
     _progressView.width = _slider.width - 4.f;
     _progressView.height = _slider.height;
     _progressView.center = _slider.center;
+
+    _activityIndicator.center = self.center;
 }
 
 - (void)_addPlayerObserver {
@@ -223,16 +251,13 @@ static int JMPlayerViewKVOContext = 0;
               context:&JMPlayerViewKVOContext];
     [self addObserver:self
            forKeyPath:@"player.currentItem.loadedTimeRanges"
-              options:NSKeyValueObservingOptionNew// | NSKeyValueObservingOptionInitial
+              options:NSKeyValueObservingOptionNew
               context:&JMPlayerViewKVOContext];
-    //    [_player addObserver:self
-    //              forKeyPath:@"currentItem.playbackBufferEmpty"
-    //                 options:NSKeyValueObservingOptionNew //| NSKeyValueObservingOptionInitial
-    //                 context:&JMPlayerViewKVOContext];
-    //    [_player addObserver:self
-    //              forKeyPath:@"currentItem.playbackLikelyToKeepUp"
-    //                 options:NSKeyValueObservingOptionNew// | NSKeyValueObservingOptionInitial
-    //                 context:&JMPlayerViewKVOContext];
+    [self addObserver:self
+           forKeyPath:@"player.currentItem.playbackBufferEmpty"
+              options:NSKeyValueObservingOptionNew
+              context:&JMPlayerViewKVOContext];
+
     @weakify(self)
     _timeObserverToken = [_player addPeriodicTimeObserverForInterval:CMTimeMake(1, 1)
                                                                queue:NULL
@@ -253,6 +278,9 @@ static int JMPlayerViewKVOContext = 0;
                  context:&JMPlayerViewKVOContext];
     [self removeObserver:self
               forKeyPath:@"player.currentItem.loadedTimeRanges"
+                 context:&JMPlayerViewKVOContext];
+    [self removeObserver:self
+              forKeyPath:@"player.currentItem.playbackBufferEmpty"
                  context:&JMPlayerViewKVOContext];
 }
 
