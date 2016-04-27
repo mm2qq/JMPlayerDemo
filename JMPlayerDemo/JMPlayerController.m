@@ -12,6 +12,7 @@
 
 @interface JMPlayerController ()
 
+@property (weak, nonatomic) IBOutlet UIView *playerWrapperView;
 @property (nonatomic) JMPlayerView *playerView;
 
 @end
@@ -24,7 +25,7 @@
     NSURL *URL1 = [[NSBundle mainBundle] URLForResource:@"ElephantSeals" withExtension:@"mov"];
     NSURL *URL2 = [NSURL URLWithString:@"https://movielalavideos.blob.core.windows.net/videos/563cb51788b8c6db4b000376.mp4"];
     _playerView = [[JMPlayerView alloc] initWithURLs:@[URL1, URL2]];
-    [self.view addSubview:_playerView];
+    [_playerWrapperView addSubview:_playerView];
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {

@@ -15,6 +15,7 @@ static int JMPlayerViewKVOContext = 0;
 
 @interface JMPlayerView () {
     id _timeObserverToken;
+    __weak UIView *_previousSuperview;
 }
 
 @property (nonatomic, copy) NSMutableArray<AVPlayerItem *> *playerItems;
@@ -182,12 +183,27 @@ static int JMPlayerViewKVOContext = 0;
 }
 
 - (void)_layout {
-    if (!UIDeviceOrientationIsPortrait([UIDevice currentDevice].orientation)) {
-        self.frame = self.superview.frame;
-    } else {
+    UIWindow *window = [UIApplication sharedApplication].keyWindow;
+
+    if (UIDeviceOrientationIsPortrait([UIDevice currentDevice].orientation)) {
+        if (self.superview == window) {
+            [self removeFromSuperview];
+            // re-add self to previous superview
+            [_previousSuperview addSubview:self];
+        }
+
         self.frame = self.superview.frame;
         self.height = self.superview.width * 9.f / 16.f;
         self.center = self.superview.center;
+    } else {
+        if (self.superview != window) {
+            // store previous superview
+            _previousSuperview = self.superview;
+            [self removeFromSuperview];
+            [window addSubview:self];
+        }
+
+        self.frame = window.frame;
     }
 
     _playerLayer.frame = self.bounds;
