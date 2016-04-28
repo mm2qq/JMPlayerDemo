@@ -8,10 +8,27 @@
 
 #import "JMPlayerView.h"
 #import "JMPlayerMacro.h"
+//#import "NSString+JMAdd.h"
+#import "UIImage+JMAdd.h"
 #import "UIView+JMAdd.h"
 #import <AVFoundation/AVFoundation.h>
 
 static int JMPlayerViewKVOContext = 0;
+
+static inline NSString * _formatTimeSeconds(double time) {
+    NSString *string;
+    int hours = (int)floor(time / 3600);
+    int minutes = (int)floor(time / 60) % 60;
+    int seconds = (int)time % 60;
+
+    if (hours > 0) {
+        string = [NSString stringWithFormat:@"%02d:%02d:%02d", hours, minutes, seconds];
+    } else {
+        string = [NSString stringWithFormat:@"%02d:%02d", minutes, seconds];
+    }
+
+    return string;
+}
 
 @interface JMPlayerView () {
     JMPlayerStatus _playerStatus;
@@ -103,8 +120,8 @@ static int JMPlayerViewKVOContext = 0;
 
         self.progressView.progress = loaded / CMTimeGetSeconds(_player.currentItem.duration);
 
-        // if buffer duration is more than 10 seconds and not in pasued, go on playing
-        if (duration > 10.0 && _playerStatus != JMPlayerStatusPaused) {
+        // if buffer duration is more than 8 seconds and not in pasued, go on playing
+        if (duration > 8.0 && _playerStatus != JMPlayerStatusPaused) {
             [self.activityIndicator stopAnimating];
             [self play];
         }
@@ -130,8 +147,11 @@ static int JMPlayerViewKVOContext = 0;
 - (UISlider *)slider {
     if (!_slider) {
         _slider = [UISlider new];
-        _slider.minimumTrackTintColor = [UIColor redColor];
-        _slider.maximumTrackTintColor = [UIColor colorWithRed:0.3 green:0.3 blue:0.3 alpha:0.6];
+        _slider.minimumTrackTintColor = [UIColor colorWithRed:.5f green:.8f blue:1.f alpha:.3f];
+
+        [_slider setMaximumTrackImage:[UIImage imageWithColor:[UIColor colorWithRed:.3f green:.3f blue:.3f alpha:.3f] size:(CGSize){1.f, 30.f}] forState:UIControlStateNormal];
+
+        [_slider setThumbImage:[UIImage imageWithColor:[UIColor colorWithRed:.5f green:.8f blue:1.f alpha:1.f] size:(CGSize){2.f, 30.f}] forState:UIControlStateNormal];
 
         [_slider addTarget:self
                     action:@selector(sliderValueChanged:)
@@ -143,12 +163,19 @@ static int JMPlayerViewKVOContext = 0;
 
 - (UIProgressView *)progressView {
     if (!_progressView) {
-        _progressView = [UIProgressView new];
-        _progressView.progressTintColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.3];
-        _progressView.trackTintColor = [UIColor clearColor];
+        _progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
+        _progressView.progressTintColor = [UIColor colorWithRed:1.f green:1.f blue:1.f alpha:.3f];
     }
 
     return _progressView;
+}
+
+- (UIActivityIndicatorView *)activityIndicator {
+    if (!_activityIndicator) {
+        _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    }
+
+    return _activityIndicator;
 }
 
 - (CMTime)currentTime {
@@ -172,14 +199,6 @@ static int JMPlayerViewKVOContext = 0;
              [self pause];
          }
      }];
-}
-
-- (UIActivityIndicatorView *)activityIndicator {
-    if (!_activityIndicator) {
-        _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-    }
-
-    return _activityIndicator;
 }
 
 #pragma mark - Private
@@ -233,11 +252,12 @@ static int JMPlayerViewKVOContext = 0;
     }
 
     _playerLayer.frame = self.bounds;
-    _slider.width = self.width;
-    _slider.height = 24.f;
+    _slider.width = self.width + 2.f;
+    _slider.height = 30.f;
     _slider.bottom = self.height;
+    _slider.left = self.left;
 
-    _progressView.width = _slider.width - 4.f;
+    _progressView.width = self.width - 2.f;
     _progressView.height = _slider.height;
     _progressView.center = _slider.center;
 
@@ -259,13 +279,11 @@ static int JMPlayerViewKVOContext = 0;
               context:&JMPlayerViewKVOContext];
 
     @weakify(self)
-    _timeObserverToken = [_player addPeriodicTimeObserverForInterval:CMTimeMake(1, 1)
-                                                               queue:NULL
-                                                          usingBlock:^(CMTime time)
-                          {
-                              @strongify(self)
-                              self.slider.value = CMTimeGetSeconds(time);
-                          }];
+    _timeObserverToken = [_player addPeriodicTimeObserverForInterval:CMTimeMake(1, 1) queue:NULL usingBlock:^(CMTime time)
+    {
+        @strongify(self)
+        self.slider.value = CMTimeGetSeconds(time);
+    }];
 }
 
 - (void)_removePlayerObserver {
@@ -283,5 +301,15 @@ static int JMPlayerViewKVOContext = 0;
               forKeyPath:@"player.currentItem.playbackBufferEmpty"
                  context:&JMPlayerViewKVOContext];
 }
+
+//- (void)_drawCurrentTime:(NSString *)timeString atPoint:(CGPoint)originPoint {
+//    CGSize stringSize = [timeString sizeForFont:nil size:(CGSize){10.f, 10.f} mode:NSLineBreakByWordWrapping];
+//    NSMutableParagraphStyle *paraStyle = [NSMutableParagraphStyle new];
+//    paraStyle.lineBreakMode = NSLineBreakByCharWrapping;
+//    [timeString drawInRect:(CGRect){originPoint, stringSize} withAttributes:
+//     @{NSFontAttributeName : [UIFont systemFontOfSize:stringSize.width],
+//       NSForegroundColorAttributeName : [UIColor whiteColor],
+//       NSParagraphStyleAttributeName : paraStyle}];
+//}
 
 @end

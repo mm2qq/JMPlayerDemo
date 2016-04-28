@@ -7,8 +7,7 @@
 //
 
 #import "JMPlayerController.h"
-#import "JMPlayerView.h"
-#import "UIView+JMAdd.h"
+#import "JMPlayer.h"
 
 @interface JMPlayerController ()
 

@@ -9,6 +9,11 @@
 #ifndef JMPlayer_h
 #define JMPlayer_h
 
+#import "JMPlayerMacro.h"
+#import "NSString+JMAdd.h"
+#import "UIImage+JMAdd.h"
+#import "UIView+JMAdd.h"
 
+#import "JMPlayerView.h"
 
 #endif /* JMPlayer_h */
