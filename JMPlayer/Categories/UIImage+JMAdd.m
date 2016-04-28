@@ -2,7 +2,7 @@
 //  UIImage+JMAdd.m
 //  JMPlayerDemo
 //
-//  Created by 毛朝龙 on 16/4/28.
+//  Created by maocl023 on 16/4/28.朝龙 on 16/4/28.
 //  Copyright © 2016年 jjj2mdd. All rights reserved.
 //
 

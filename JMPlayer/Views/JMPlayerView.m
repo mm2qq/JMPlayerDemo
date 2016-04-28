@@ -8,7 +8,6 @@
 
 #import "JMPlayerView.h"
 #import "JMPlayerMacro.h"
-//#import "NSString+JMAdd.h"
 #import "UIImage+JMAdd.h"
 #import "UIView+JMAdd.h"
 #import <AVFoundation/AVFoundation.h>
@@ -49,6 +48,10 @@ static inline NSString * _formatTimeSeconds(double time) {
 @property (nonatomic) CMTime currentTime;
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicator;
+
+@property (nonatomic) UILabel *timeLabel;
+
+@property (nonatomic) UILabel *durationLabel;
 
 @end
 
@@ -103,11 +106,14 @@ static inline NSString * _formatTimeSeconds(double time) {
     if ([keyPath isEqualToString:@"player.currentItem.duration"]) {
         CMTime duration = _player.currentItem.duration;
         BOOL isValidDuration = CMTIME_IS_NUMERIC(duration) && duration.value != 0;
-        double durationSecond = isValidDuration ? CMTimeGetSeconds(duration) : 0.0;
+        double durationSeconds = isValidDuration ? CMTimeGetSeconds(duration) : 0.0;
 
-        self.slider.maximumValue = durationSecond;
+        self.slider.maximumValue = durationSeconds;
         self.slider.value = isValidDuration ? CMTimeGetSeconds(self.currentTime) : 0.0;
         self.slider.enabled = isValidDuration;
+
+        // set duration label
+        self.durationLabel.text = _formatTimeSeconds(durationSeconds);
     } else if ([keyPath isEqualToString:@"player.currentItem.loadedTimeRanges"]) {
         NSArray *loadedTimeRages = _player.currentItem.loadedTimeRanges;
 
@@ -149,9 +155,9 @@ static inline NSString * _formatTimeSeconds(double time) {
         _slider = [UISlider new];
         _slider.minimumTrackTintColor = [UIColor colorWithRed:.5f green:.8f blue:1.f alpha:.3f];
 
-        [_slider setMaximumTrackImage:[UIImage imageWithColor:[UIColor colorWithRed:.3f green:.3f blue:.3f alpha:.3f] size:(CGSize){1.f, 30.f}] forState:UIControlStateNormal];
+        [_slider setMaximumTrackImage:[UIImage imageWithColor:[UIColor colorWithRed:.3f green:.3f blue:.3f alpha:.3f] size:(CGSize){1.f, 36.f}] forState:UIControlStateNormal];
 
-        [_slider setThumbImage:[UIImage imageWithColor:[UIColor colorWithRed:.5f green:.8f blue:1.f alpha:1.f] size:(CGSize){2.f, 30.f}] forState:UIControlStateNormal];
+        [_slider setThumbImage:[UIImage imageWithColor:[UIColor colorWithRed:.5f green:.8f blue:1.f alpha:1.f] size:(CGSize){2.f, 36.f}] forState:UIControlStateNormal];
 
         [_slider addTarget:self
                     action:@selector(sliderValueChanged:)
@@ -201,6 +207,30 @@ static inline NSString * _formatTimeSeconds(double time) {
      }];
 }
 
+- (UILabel *)timeLabel {
+    if (!_timeLabel) {
+        _timeLabel = [UILabel new];
+        _timeLabel.font = [UIFont systemFontOfSize:14.f];
+        _timeLabel.textColor = [UIColor colorWithRed:1.f green:1.f blue:1.f alpha:.3f];
+        _timeLabel.text = @"00:00";
+        [_timeLabel sizeToFit];
+    }
+
+    return _timeLabel;
+}
+
+- (UILabel *)durationLabel {
+    if (!_durationLabel) {
+        _durationLabel = [UILabel new];
+        _durationLabel.font = [UIFont systemFontOfSize:14.f];
+        _durationLabel.textColor = [UIColor colorWithRed:1.f green:1.f blue:1.f alpha:.3f];
+        _durationLabel.text = @"00:00";
+        [_durationLabel sizeToFit];
+    }
+
+    return _durationLabel;
+}
+
 #pragma mark - Private
 
 - (void)_setupPlayer {
@@ -218,8 +248,13 @@ static inline NSString * _formatTimeSeconds(double time) {
     _playerLayer = [AVPlayerLayer playerLayerWithPlayer:_player];
     _playerStatus = JMPlayerStatusPaused;
 
+    // TODO:move player view's subviews to another view
+
     self.backgroundColor = [UIColor blackColor];
     [self.layer addSublayer:_playerLayer];
+
+    [self addSubview:self.timeLabel];
+    [self addSubview:self.durationLabel];
     [self addSubview:self.progressView];
     [self addSubview:self.slider];
     [self addSubview:self.activityIndicator];
@@ -251,9 +286,15 @@ static inline NSString * _formatTimeSeconds(double time) {
         self.frame = window.frame;
     }
 
+    _timeLabel.bottom = self.height;
+    _timeLabel.left = self.left;
+
+    _durationLabel.bottom = self.height;
+    _durationLabel.right = self.right;
+
     _playerLayer.frame = self.bounds;
     _slider.width = self.width + 2.f;
-    _slider.height = 30.f;
+    _slider.height = 36.f;
     _slider.bottom = self.height;
     _slider.left = self.left;
 
@@ -283,6 +324,8 @@ static inline NSString * _formatTimeSeconds(double time) {
     {
         @strongify(self)
         self.slider.value = CMTimeGetSeconds(time);
+        // set time label
+        self.timeLabel.text = _formatTimeSeconds(self.slider.value);
     }];
 }
 
@@ -301,15 +344,5 @@ static inline NSString * _formatTimeSeconds(double time) {
               forKeyPath:@"player.currentItem.playbackBufferEmpty"
                  context:&JMPlayerViewKVOContext];
 }
-
-//- (void)_drawCurrentTime:(NSString *)timeString atPoint:(CGPoint)originPoint {
-//    CGSize stringSize = [timeString sizeForFont:nil size:(CGSize){10.f, 10.f} mode:NSLineBreakByWordWrapping];
-//    NSMutableParagraphStyle *paraStyle = [NSMutableParagraphStyle new];
-//    paraStyle.lineBreakMode = NSLineBreakByCharWrapping;
-//    [timeString drawInRect:(CGRect){originPoint, stringSize} withAttributes:
-//     @{NSFontAttributeName : [UIFont systemFontOfSize:stringSize.width],
-//       NSForegroundColorAttributeName : [UIColor whiteColor],
-//       NSParagraphStyleAttributeName : paraStyle}];
-//}
 
 @end
