@@ -44,7 +44,6 @@ static int JMPlayerViewKVOContext = 0;
 
     if (self) {
         _URLs = URLs.copy;
-        self.backgroundColor = [UIColor blackColor];
         [self _setupPlayer];
     }
 
@@ -200,6 +199,7 @@ static int JMPlayerViewKVOContext = 0;
     _playerLayer = [AVPlayerLayer playerLayerWithPlayer:_player];
     _playerStatus = JMPlayerStatusPaused;
 
+    self.backgroundColor = [UIColor blackColor];
     [self.layer addSublayer:_playerLayer];
     [self addSubview:self.progressView];
     [self addSubview:self.slider];

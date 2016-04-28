@@ -92,20 +92,12 @@
 			isa = PBXGroup;
 			children = (
 				677BD55D1CD0A7B100873C50 /* Categories */,
-				670966981CCE472500EC5958 /* Assets */,
 				6709669B1CCE472500EC5958 /* Views */,
 				67D2F3DA1CCFD55B00D35769 /* JMPlayerMacro.h */,
 				67D2F3D91CCFD42300D35769 /* JMPlayer.h */,
 			);
 			path = JMPlayer;
 			sourceTree = SOURCE_ROOT;
-		};
-		670966981CCE472500EC5958 /* Assets */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Assets;
-			sourceTree = "<group>";
 		};
 		6709669B1CCE472500EC5958 /* Views */ = {
 			isa = PBXGroup;

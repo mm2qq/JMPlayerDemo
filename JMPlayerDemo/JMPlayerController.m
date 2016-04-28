@@ -28,8 +28,4 @@
     [_playerWrapperView addSubview:_playerView];
 }
 
-- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
-    [_playerWrapperView setNeedsDisplay];
-}
-
 @end

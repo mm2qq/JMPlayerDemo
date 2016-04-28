@@ -18,8 +18,6 @@ typedef NS_ENUM(NSUInteger, JMPlayerStatus) {
 
 @property (nonatomic, copy) NSArray *URLs;
 
-//@property (nonatomic, copy) void (^currentTimeCallback)(double currentTimeSecond);
-
 /**
  *  Initialize a player view with video URL
  *
