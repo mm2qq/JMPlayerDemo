@@ -112,7 +112,11 @@ static inline NSString * _formatTimeSeconds(double time) {
         self.slider.value = isValidDuration ? CMTimeGetSeconds(self.currentTime) : 0.0;
         self.slider.enabled = isValidDuration;
 
-        // set duration label
+        // set time label
+        if (!isValidDuration) {
+            self.timeLabel.text = _formatTimeSeconds(durationSeconds);
+            [self.activityIndicator stopAnimating];
+        }
         self.durationLabel.text = _formatTimeSeconds(durationSeconds);
     } else if ([keyPath isEqualToString:@"player.currentItem.loadedTimeRanges"]) {
         NSArray *loadedTimeRages = _player.currentItem.loadedTimeRanges;
@@ -209,11 +213,10 @@ static inline NSString * _formatTimeSeconds(double time) {
 
 - (UILabel *)timeLabel {
     if (!_timeLabel) {
-        _timeLabel = [UILabel new];
+        _timeLabel = [[UILabel alloc] initWithFrame:(CGRect){CGPointZero, (CGSize){61.f, 17.f}}];
         _timeLabel.font = [UIFont systemFontOfSize:14.f];
         _timeLabel.textColor = [UIColor colorWithRed:1.f green:1.f blue:1.f alpha:.3f];
         _timeLabel.text = @"00:00";
-        [_timeLabel sizeToFit];
     }
 
     return _timeLabel;
@@ -221,11 +224,11 @@ static inline NSString * _formatTimeSeconds(double time) {
 
 - (UILabel *)durationLabel {
     if (!_durationLabel) {
-        _durationLabel = [UILabel new];
+        _durationLabel = [[UILabel alloc] initWithFrame:(CGRect){CGPointZero, (CGSize){61.f, 17.f}}];
         _durationLabel.font = [UIFont systemFontOfSize:14.f];
         _durationLabel.textColor = [UIColor colorWithRed:1.f green:1.f blue:1.f alpha:.3f];
         _durationLabel.text = @"00:00";
-        [_durationLabel sizeToFit];
+        _durationLabel.textAlignment = NSTextAlignmentRight;
     }
 
     return _durationLabel;
