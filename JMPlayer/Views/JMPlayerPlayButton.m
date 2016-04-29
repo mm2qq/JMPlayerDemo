@@ -33,7 +33,7 @@
     CGContextClosePath(ctx);
 
     CGContextSetShouldAntialias(ctx, true);
-    CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:1.f green:1.f blue:1.f alpha:.3f].CGColor);
+    CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:.3f green:.3f blue:.3f alpha:.3f].CGColor);
     CGContextFillPath(ctx);
 }
 
@@ -54,7 +54,7 @@
 
     CGContextSetShouldAntialias(ctx, true);
     CGContextSetLineWidth(ctx, 25.f);
-    CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithRed:1.f green:1.f blue:1.f alpha:.3f].CGColor);
+    CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithRed:.3f green:.3f blue:.3f alpha:.3f].CGColor);
     CGContextStrokePath(ctx);
 }
 

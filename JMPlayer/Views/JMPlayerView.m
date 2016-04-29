@@ -324,12 +324,12 @@ static inline NSString * _formatTimeSeconds(double time) {
     _durationLabel.right = self.right;
 
     _playerLayer.frame = self.bounds;
-    _slider.width = self.width + 2.f;
+    _slider.width = self.width + 4.f;
     _slider.height = 36.f;
     _slider.bottom = self.height;
-    _slider.left = self.left;
+    _slider.centerX = self.centerX;
 
-    _progressView.width = self.width - 2.f;
+    _progressView.width = self.width;
     _progressView.height = _slider.height;
     _progressView.center = _slider.center;
 
