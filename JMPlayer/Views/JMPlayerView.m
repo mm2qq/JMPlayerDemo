@@ -8,6 +8,8 @@
 
 #import "JMPlayerView.h"
 #import "JMPlayerMacro.h"
+#import "JMPlayerPlayButton.h"
+#import "UIControl+JMAdd.h"
 #import "UIImage+JMAdd.h"
 #import "UIView+JMAdd.h"
 #import <AVFoundation/AVFoundation.h>
@@ -52,6 +54,8 @@ static inline NSString * _formatTimeSeconds(double time) {
 @property (nonatomic) UILabel *timeLabel;
 
 @property (nonatomic) UILabel *durationLabel;
+
+@property (nonatomic) JMPlayerPlayButton *playButton;
 
 @end
 
@@ -141,12 +145,6 @@ static inline NSString * _formatTimeSeconds(double time) {
     }
 }
 
-- (void)sliderValueChanged:(UISlider *)slider {
-    // change player status as slider value changed
-    _playerStatus = JMPlayerStatusBuffering;
-    self.currentTime = CMTimeMakeWithSeconds(slider.value, 1000);
-}
-
 #pragma mark - Getters & Setters
 
 - (void)setURLs:(NSArray *)URLs {
@@ -163,9 +161,14 @@ static inline NSString * _formatTimeSeconds(double time) {
 
         [_slider setThumbImage:[UIImage imageWithColor:[UIColor colorWithRed:.5f green:.8f blue:1.f alpha:1.f] size:(CGSize){2.f, 36.f}] forState:UIControlStateNormal];
 
-        [_slider addTarget:self
-                    action:@selector(sliderValueChanged:)
-          forControlEvents:UIControlEventValueChanged];
+        @weakify(self)
+        [_slider setBlockForControlEvents:UIControlEventValueChanged
+                                    block:^(UISlider *slider)
+         {
+             @strongify(self)
+             _playerStatus = JMPlayerStatusBuffering;
+             self.currentTime = CMTimeMakeWithSeconds(slider.value, 1000);
+         }];
     }
 
     return _slider;
@@ -234,6 +237,30 @@ static inline NSString * _formatTimeSeconds(double time) {
     return _durationLabel;
 }
 
+- (JMPlayerPlayButton *)playButton {
+    if (!_playButton) {
+        _playButton = [[JMPlayerPlayButton alloc] initWithFrame:(CGRect){CGPointZero, (CGSize){40.f, 40.f}}];
+        _playButton.backgroundColor = [UIColor clearColor];
+
+        @weakify(self)
+        [_playButton setBlockForControlEvents:UIControlEventTouchUpInside
+                                        block:^(JMPlayerPlayButton *button)
+        {
+            @strongify(self)
+
+            if (button.playing) {
+                [self pause];
+                button.playing = NO;
+            } else {
+                [self play];
+                button.playing = YES;
+            }
+        }];
+    }
+
+    return _playButton;
+}
+
 #pragma mark - Private
 
 - (void)_setupPlayer {
@@ -261,6 +288,7 @@ static inline NSString * _formatTimeSeconds(double time) {
     [self addSubview:self.progressView];
     [self addSubview:self.slider];
     [self addSubview:self.activityIndicator];
+    [self addSubview:self.playButton];
 
     [self _addPlayerObserver];
 }
@@ -306,6 +334,7 @@ static inline NSString * _formatTimeSeconds(double time) {
     _progressView.center = _slider.center;
 
     _activityIndicator.center = self.center;
+    _playButton.center = self.center;
 }
 
 - (void)_addPlayerObserver {
@@ -324,12 +353,12 @@ static inline NSString * _formatTimeSeconds(double time) {
 
     @weakify(self)
     _timeObserverToken = [_player addPeriodicTimeObserverForInterval:CMTimeMake(1, 1) queue:NULL usingBlock:^(CMTime time)
-    {
-        @strongify(self)
-        self.slider.value = CMTimeGetSeconds(time);
-        // set time label
-        self.timeLabel.text = _formatTimeSeconds(self.slider.value);
-    }];
+                          {
+                              @strongify(self)
+                              self.slider.value = CMTimeGetSeconds(time);
+                              // set time label
+                              self.timeLabel.text = _formatTimeSeconds(self.slider.value);
+                          }];
 }
 
 - (void)_removePlayerObserver {

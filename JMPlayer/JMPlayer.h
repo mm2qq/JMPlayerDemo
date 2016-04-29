@@ -10,6 +10,7 @@
 #define JMPlayer_h
 
 #import "JMPlayerMacro.h"
+#import "UIControl+JMAdd.h"
 #import "UIImage+JMAdd.h"
 #import "UIView+JMAdd.h"
 
