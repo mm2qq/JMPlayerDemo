@@ -5,9 +5,11 @@ A simple video player demo based on AVFoundation
 * iOS 8 or later
 
 ### Samples
-![portrait](https://github.com/maocl023/JMPlayerDemo/blob/master/Samples/portrait.png)
+![](https://github.com/maocl023/JMPlayerDemo/blob/master/Samples/portrait.png)
 
-![landscape](https://github.com/maocl023/JMPlayerDemo/blob/master/Samples/landscape.png)
+![](https://github.com/maocl023/JMPlayerDemo/blob/master/Samples/landscape1.PNG)
+
+![](https://github.com/maocl023/JMPlayerDemo/blob/master/Samples/landscape2.PNG)
 
 ### Usage
 
@@ -15,7 +17,7 @@ A simple video player demo based on AVFoundation
     ...
     NSURL *URL1 = [[NSBundle mainBundle] URLForResource:<#local resource#> withExtension:<#extension#>];
     NSURL *URL2 = [NSURL URLWithString:<#web resource#>];
-    JMPlayerView *playerView = [[JMPlayerView alloc] initWithURLs:@[URL1, URL2]];
+    JMPlayer *player = [[JMPlayer alloc] initWithURLs:@[URL1, URL2]];
     ...
   
 ### Bug
