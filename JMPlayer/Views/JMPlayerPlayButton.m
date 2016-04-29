@@ -11,12 +11,11 @@
 @implementation JMPlayerPlayButton
 
 - (void)drawRect:(CGRect)rect {
-    _playing ? [self _drawLineInRect:rect] : [self _drawTriangleInRect:rect];
+    self.isPlaying ? [self _drawLineInRect:rect] : [self _drawTriangleInRect:rect];
 }
 
 - (void)setPlaying:(BOOL)playing {
     _playing = playing;
-
     [self setNeedsDisplay];
 }
 

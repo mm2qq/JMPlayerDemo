@@ -9,7 +9,7 @@
 #import "UIControl+JMAdd.h"
 #import <objc/runtime.h>
 
-static const int block_key;
+static const NSInteger block_key;
 
 @interface _JMUIControlBlockTarget : NSObject
 

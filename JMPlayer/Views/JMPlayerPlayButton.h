@@ -10,6 +10,6 @@
 
 @interface JMPlayerPlayButton : UIControl
 
-@property (nonatomic, assign) BOOL playing;
+@property (nonatomic, assign, getter=isPlaying) BOOL playing;
 
 @end
