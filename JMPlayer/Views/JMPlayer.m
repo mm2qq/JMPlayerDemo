@@ -91,7 +91,7 @@ static NSInteger JMPlayerKVOContext = 0;
         CGFloat duration = CMTimeGetSeconds(timeRage.duration);
         CGFloat progress = (start + duration) / CMTimeGetSeconds(_player.currentItem.duration);
 
-        // if buffered duration is more than 8 seconds and not in pasued, go on playing
+        // if buffered duration is more than 5 seconds and not in pasued, go on playing
         if (duration > 5.0 && _playerStatus != JMPlayerStatusPaused) {
             [self.indicator stopAnimating];
             [self _play];
@@ -125,14 +125,7 @@ static NSInteger JMPlayerKVOContext = 0;
       completionHandler:^(BOOL finished)
      {
          @strongify(self)
-
-         if (finished) {
-             // just continue playing
-             [self _play];
-         } else {
-             // pause while sliding
-             [self _pause];
-         }
+         finished ? [self _play] : [self _pause];
      }];
 }
 
