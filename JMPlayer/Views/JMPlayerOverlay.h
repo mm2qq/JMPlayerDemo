@@ -14,4 +14,6 @@
 
 @property (nonatomic, copy) void (^playButtonDidTapped)(BOOL isPlaying);
 
+@property (nonatomic, copy) void (^rotateButtonDidTapped)();
+
 @end

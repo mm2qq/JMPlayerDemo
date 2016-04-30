@@ -150,6 +150,10 @@ static NSInteger JMPlayerKVOContext = 0;
             @strongify(self)
             isPlaying ? [self _pause] : [self _play];
         };
+        _overlay.rotateButtonDidTapped = ^{
+            @strongify(self)
+            [self _toggleScreenOrientation];
+        };
 
         self.delegate = (id<JMPlayerDelegate>)_overlay;
     }
@@ -185,7 +189,16 @@ static NSInteger JMPlayerKVOContext = 0;
 - (void)_layoutSubviews {
     UIWindow *window = [UIApplication sharedApplication].keyWindow;
 
-    if (UIDeviceOrientationIsPortrait([UIDevice currentDevice].orientation)) {
+    if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
+        if (self.superview != window) {
+            // store previous superview
+            _previousSuperview = self.superview;
+            [self removeFromSuperview];
+            [window addSubview:self];
+        }
+
+        self.frame = window.frame;
+    } else {
         if (self.superview == window) {
             [self removeFromSuperview];
             // re-add self to previous superview
@@ -195,15 +208,6 @@ static NSInteger JMPlayerKVOContext = 0;
         self.frame = self.superview.frame;
         self.height = self.superview.width * 9.f / 16.f;
         self.center = self.superview.center;
-    } else {
-        if (self.superview != window) {
-            // store previous superview
-            _previousSuperview = self.superview;
-            [self removeFromSuperview];
-            [window addSubview:self];
-        }
-
-        self.frame = window.frame;
     }
 
     _playerLayer.frame = self.bounds;
@@ -262,6 +266,18 @@ static NSInteger JMPlayerKVOContext = 0;
     if (_playerStatus != JMPlayerStatusPaused) {
         [_player pause];
         _playerStatus = JMPlayerStatusPaused;
+    }
+}
+
+- (void)_toggleScreenOrientation {
+    if ([[UIDevice currentDevice] respondsToSelector:@selector(setOrientation:)]) {
+        SEL selector = NSSelectorFromString(@"setOrientation:");
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[UIDevice instanceMethodSignatureForSelector:selector]];
+        [invocation setSelector:selector];
+        [invocation setTarget:[UIDevice currentDevice]];
+        UIDeviceOrientation orientation = UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation) ? UIDeviceOrientationPortrait : UIDeviceOrientationLandscapeLeft;
+        [invocation setArgument:&orientation atIndex:2];
+        [invocation invoke];
     }
 }
 

@@ -14,6 +14,7 @@
 		670966A11CCE4FF800EC5958 /* JMPlayerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 670966A01CCE4FF800EC5958 /* JMPlayerController.m */; };
 		676635171CD21DA9002C745A /* UIImage+JMAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 676635161CD21DA9002C745A /* UIImage+JMAdd.m */; };
 		677BD5601CD0A7CA00873C50 /* UIView+JMAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 677BD55F1CD0A7CA00873C50 /* UIView+JMAdd.m */; };
+		679D1B7E1CD491D900D4C78F /* JMPlayerRotateButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 679D1B7D1CD491D900D4C78F /* JMPlayerRotateButton.m */; };
 		67C62C651CD3CDEF0099B911 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 67C62C641CD3CDEF0099B911 /* Default-568h@2x.png */; };
 		67C62C681CD3D7940099B911 /* JMPlayerOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 67C62C671CD3D7940099B911 /* JMPlayerOverlay.m */; };
 		67C89F311CD37E6400E6FC87 /* JMPlayerPlayButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 67C89F301CD37E6400E6FC87 /* JMPlayerPlayButton.m */; };
@@ -35,6 +36,8 @@
 		676635161CD21DA9002C745A /* UIImage+JMAdd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+JMAdd.m"; sourceTree = "<group>"; };
 		677BD55E1CD0A7CA00873C50 /* UIView+JMAdd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+JMAdd.h"; sourceTree = "<group>"; };
 		677BD55F1CD0A7CA00873C50 /* UIView+JMAdd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+JMAdd.m"; sourceTree = "<group>"; };
+		679D1B7C1CD491D900D4C78F /* JMPlayerRotateButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMPlayerRotateButton.h; sourceTree = "<group>"; };
+		679D1B7D1CD491D900D4C78F /* JMPlayerRotateButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMPlayerRotateButton.m; sourceTree = "<group>"; };
 		67C62C641CD3CDEF0099B911 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		67C62C661CD3D7940099B911 /* JMPlayerOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMPlayerOverlay.h; sourceTree = "<group>"; };
 		67C62C671CD3D7940099B911 /* JMPlayerOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMPlayerOverlay.m; sourceTree = "<group>"; };
@@ -109,6 +112,8 @@
 		6709669B1CCE472500EC5958 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				679D1B7C1CD491D900D4C78F /* JMPlayerRotateButton.h */,
+				679D1B7D1CD491D900D4C78F /* JMPlayerRotateButton.m */,
 				67C89F2F1CD37E6400E6FC87 /* JMPlayerPlayButton.h */,
 				67C89F301CD37E6400E6FC87 /* JMPlayerPlayButton.m */,
 				67C62C661CD3D7940099B911 /* JMPlayerOverlay.h */,
@@ -202,6 +207,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				679D1B7E1CD491D900D4C78F /* JMPlayerRotateButton.m in Sources */,
 				67C89F311CD37E6400E6FC87 /* JMPlayerPlayButton.m in Sources */,
 				676635171CD21DA9002C745A /* UIImage+JMAdd.m in Sources */,
 				6709669E1CCE4C0E00EC5958 /* JMPlayer.m in Sources */,

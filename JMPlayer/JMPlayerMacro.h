@@ -9,6 +9,15 @@
 #ifndef JMPlayerMacro_h
 #define JMPlayerMacro_h
 
+#pragma mark - Player theme colors
+
+#define OverlayBackgroundColor [UIColor colorWithRed:.3f green:.3f blue:.3f alpha:.3f]
+#define OverlayForegroundColor [UIColor colorWithRed:1.f green:1.f blue:1.f alpha:.3f]
+#define OverlayProgressColor [UIColor colorWithRed:.5f green:.8f blue:1.f alpha:1.f]
+#define OverlayProgressLightColor [UIColor colorWithRed:.5f green:.8f blue:1.f alpha:.3f]
+
+#pragma mark - Utilities
+
 #ifndef weakify
     #if DEBUG
         #if __has_feature(objc_arc)
