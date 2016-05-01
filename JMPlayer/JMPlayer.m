@@ -15,7 +15,9 @@
 
 static const void *JMPlayerKVOContext;
 
-@interface JMPlayer () <UIGestureRecognizerDelegate> {
+@interface JMPlayer () <UIGestureRecognizerDelegate>
+{
+    @private
     JMPlayerStatus _playerStatus;
     id _timeObserverToken;
     __weak UIView *_previousSuperview;

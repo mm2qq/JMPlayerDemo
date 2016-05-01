@@ -10,6 +10,7 @@
 #import "JMPlayer.h"
 #import "JMPlayerPlayButton.h"
 #import "JMPlayerRotateButton.h"
+#import "NSTimer+JMAdd.h"
 #import "UIControl+JMAdd.h"
 #import "UIGestureRecognizer+JMAdd.h"
 #import "UIImage+JMAdd.h"
@@ -38,6 +39,10 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 }
 
 @interface JMPlayerOverlay () <JMPlayerDelegate, UIGestureRecognizerDelegate>
+{
+    @private
+    __weak NSTimer *_autoHideTimer;
+}
 
 @property (nonatomic, weak) JMPlayer *player;
 
@@ -89,7 +94,7 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 #pragma mark - Public
 
 - (void)show {
-    if (self.hidden) {
+    if (self.isHidden) {
         UIViewAnimationOptions options = UIViewAnimationOptionCurveLinear |
         UIViewAnimationOptionAllowAnimatedContent |
         UIViewAnimationOptionShowHideTransitionViews |
@@ -286,16 +291,22 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 }
 
 - (void)_autoHide {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW,
-                                 (int64_t)(OverlayAutoHideInterval * NSEC_PER_SEC)),
-                   dispatch_get_main_queue(), ^
-                   {
-                       [self _hide];
-                   });
+    // avoid timer execute hide while is hidden
+    if (_autoHideTimer.isValid) {
+        [_autoHideTimer invalidate];
+    }
+
+    @weakify(self)
+    _autoHideTimer = [NSTimer scheduledTimerWithTimeInterval:OverlayAutoHideInterval
+                                                       block:^(NSTimer * _Nonnull timer) {
+                                                           @strongify(self)
+                                                           [self _hide];
+                                                       }
+                                                     repeats:NO];
 }
 
 - (void)_hide {
-    if (!self.hidden) {
+    if (!self.isHidden) {
         [UIView animateWithDuration:OverlayAnimateDuration
                               delay:0
                             options:UIViewAnimationOptionCurveLinear

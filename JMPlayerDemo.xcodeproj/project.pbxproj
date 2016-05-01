@@ -20,6 +20,7 @@
 		67D51EB01CD5F6C500A4D0F5 /* JMPlayerPlayButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 67D51EA81CD5F6C500A4D0F5 /* JMPlayerPlayButton.m */; };
 		67D51EB11CD5F6C500A4D0F5 /* JMPlayerRotateButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 67D51EAA1CD5F6C500A4D0F5 /* JMPlayerRotateButton.m */; };
 		67D51EB41CD5FA2E00A4D0F5 /* UIGestureRecognizer+JMAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 67D51EB31CD5FA2E00A4D0F5 /* UIGestureRecognizer+JMAdd.m */; };
+		67D51EBA1CD63E3E00A4D0F5 /* NSTimer+JMAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 67D51EB91CD63E3E00A4D0F5 /* NSTimer+JMAdd.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -49,6 +50,8 @@
 		67D51EAA1CD5F6C500A4D0F5 /* JMPlayerRotateButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMPlayerRotateButton.m; sourceTree = "<group>"; };
 		67D51EB21CD5FA2E00A4D0F5 /* UIGestureRecognizer+JMAdd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIGestureRecognizer+JMAdd.h"; sourceTree = "<group>"; };
 		67D51EB31CD5FA2E00A4D0F5 /* UIGestureRecognizer+JMAdd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIGestureRecognizer+JMAdd.m"; sourceTree = "<group>"; };
+		67D51EB81CD63E3E00A4D0F5 /* NSTimer+JMAdd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSTimer+JMAdd.h"; sourceTree = "<group>"; };
+		67D51EB91CD63E3E00A4D0F5 /* NSTimer+JMAdd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSTimer+JMAdd.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +120,8 @@
 		67D51E9A1CD5F6C500A4D0F5 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				67D51EB81CD63E3E00A4D0F5 /* NSTimer+JMAdd.h */,
+				67D51EB91CD63E3E00A4D0F5 /* NSTimer+JMAdd.m */,
 				67D51E9B1CD5F6C500A4D0F5 /* UIControl+JMAdd.h */,
 				67D51E9C1CD5F6C500A4D0F5 /* UIControl+JMAdd.m */,
 				67D51EB21CD5FA2E00A4D0F5 /* UIGestureRecognizer+JMAdd.h */,
@@ -215,6 +220,7 @@
 				670966841CCE3D5B00EC5958 /* AppDelegate.m in Sources */,
 				67D51EAC1CD5F6C500A4D0F5 /* UIImage+JMAdd.m in Sources */,
 				67D51EB41CD5FA2E00A4D0F5 /* UIGestureRecognizer+JMAdd.m in Sources */,
+				67D51EBA1CD63E3E00A4D0F5 /* NSTimer+JMAdd.m in Sources */,
 				67D51EAF1CD5F6C500A4D0F5 /* JMPlayerOverlay.m in Sources */,
 				67D51EAE1CD5F6C500A4D0F5 /* JMPlayer.m in Sources */,
 				67D51EB01CD5F6C500A4D0F5 /* JMPlayerPlayButton.m in Sources */,
