@@ -19,6 +19,8 @@
 static const CGFloat OverlaySliderHeigt = 36.f;
 static const CGFloat OverlayPlayButtonWidth = 40.f;
 static const CGFloat OverlayControlMargin = 4.f;
+static const CGFloat OverlayAnimateDuration = .25f;
+static const CGFloat OverlayAutoHideInterval = 5.f;
 
 static inline NSString * _formatTimeSeconds(CGFloat time) {
     NSString *string;
@@ -88,8 +90,25 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 
 - (void)show {
     if (self.hidden) {
-        NSLog(@"I'm hidden now, I want to show!!!");
-        self.hidden = NO;
+        UIViewAnimationOptions options = UIViewAnimationOptionCurveLinear |
+        UIViewAnimationOptionAllowAnimatedContent |
+        UIViewAnimationOptionShowHideTransitionViews |
+        UIViewAnimationOptionTransitionFlipFromBottom;
+
+        [UIView animateWithDuration:OverlayAnimateDuration
+                              delay:0
+                            options:options
+                         animations:^
+         {
+             self.alpha = 1.f;
+         }
+                         completion:^(BOOL finished)
+         {
+             if (finished) {
+                 self.hidden = NO;
+                 [self _autoHide];
+             }
+         }];
     }
 }
 
@@ -193,6 +212,9 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
              @strongify(self)
              !self.playButtonDidTapped ? : self.playButtonDidTapped(button.isPlaying);
              button.playing = !button.isPlaying;
+
+             // ready to hide overlay
+             [self _autoHide];
          }];
     }
 
@@ -263,10 +285,30 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
     [self addGestureRecognizer:tapGesture];
 }
 
+- (void)_autoHide {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW,
+                                 (int64_t)(OverlayAutoHideInterval * NSEC_PER_SEC)),
+                   dispatch_get_main_queue(), ^
+                   {
+                       [self _hide];
+                   });
+}
+
 - (void)_hide {
     if (!self.hidden) {
-        NSLog(@"I'm show off, let me alone.");
-        self.hidden = YES;
+        [UIView animateWithDuration:OverlayAnimateDuration
+                              delay:0
+                            options:UIViewAnimationOptionCurveLinear
+                         animations:^
+         {
+             self.alpha = 0.f;
+         }
+                         completion:^(BOOL finished)
+         {
+             if (finished) {
+                 self.hidden = YES;
+             }
+         }];
     }
 }
 
