@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class JMPlayer;
 
 typedef NS_ENUM(NSUInteger, JMPlayerStatus) {
@@ -47,3 +49,5 @@ typedef NS_ENUM(NSUInteger, JMPlayerStatus) {
 - (instancetype)initWithURLs:(NSArray<NSURL *> *)URLs;
 
 @end
+
+NS_ASSUME_NONNULL_END

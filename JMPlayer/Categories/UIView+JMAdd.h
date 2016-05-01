@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface UIView (JMAdd)
 
 @property (nonatomic) CGFloat left;        ///< Shortcut for frame.origin.x.
@@ -22,3 +24,5 @@
 @property (nonatomic) CGSize  size;        ///< Shortcut for frame.size.
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -10,15 +10,16 @@
 		670966811CCE3D5B00EC5958 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 670966801CCE3D5B00EC5958 /* main.m */; };
 		670966841CCE3D5B00EC5958 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 670966831CCE3D5B00EC5958 /* AppDelegate.m */; };
 		6709668A1CCE3D5B00EC5958 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 670966881CCE3D5B00EC5958 /* Main.storyboard */; };
-		6709669E1CCE4C0E00EC5958 /* JMPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 6709669D1CCE4C0E00EC5958 /* JMPlayer.m */; };
 		670966A11CCE4FF800EC5958 /* JMPlayerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 670966A01CCE4FF800EC5958 /* JMPlayerController.m */; };
-		676635171CD21DA9002C745A /* UIImage+JMAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 676635161CD21DA9002C745A /* UIImage+JMAdd.m */; };
-		677BD5601CD0A7CA00873C50 /* UIView+JMAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 677BD55F1CD0A7CA00873C50 /* UIView+JMAdd.m */; };
-		679D1B7E1CD491D900D4C78F /* JMPlayerRotateButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 679D1B7D1CD491D900D4C78F /* JMPlayerRotateButton.m */; };
 		67C62C651CD3CDEF0099B911 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 67C62C641CD3CDEF0099B911 /* Default-568h@2x.png */; };
-		67C62C681CD3D7940099B911 /* JMPlayerOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 67C62C671CD3D7940099B911 /* JMPlayerOverlay.m */; };
-		67C89F311CD37E6400E6FC87 /* JMPlayerPlayButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 67C89F301CD37E6400E6FC87 /* JMPlayerPlayButton.m */; };
-		67C89F341CD37E9900E6FC87 /* UIControl+JMAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 67C89F331CD37E9900E6FC87 /* UIControl+JMAdd.m */; };
+		67D51EAB1CD5F6C500A4D0F5 /* UIControl+JMAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 67D51E9C1CD5F6C500A4D0F5 /* UIControl+JMAdd.m */; };
+		67D51EAC1CD5F6C500A4D0F5 /* UIImage+JMAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 67D51E9E1CD5F6C500A4D0F5 /* UIImage+JMAdd.m */; };
+		67D51EAD1CD5F6C500A4D0F5 /* UIView+JMAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 67D51EA01CD5F6C500A4D0F5 /* UIView+JMAdd.m */; };
+		67D51EAE1CD5F6C500A4D0F5 /* JMPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 67D51EA21CD5F6C500A4D0F5 /* JMPlayer.m */; };
+		67D51EAF1CD5F6C500A4D0F5 /* JMPlayerOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 67D51EA61CD5F6C500A4D0F5 /* JMPlayerOverlay.m */; };
+		67D51EB01CD5F6C500A4D0F5 /* JMPlayerPlayButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 67D51EA81CD5F6C500A4D0F5 /* JMPlayerPlayButton.m */; };
+		67D51EB11CD5F6C500A4D0F5 /* JMPlayerRotateButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 67D51EAA1CD5F6C500A4D0F5 /* JMPlayerRotateButton.m */; };
+		67D51EB41CD5FA2E00A4D0F5 /* UIGestureRecognizer+JMAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 67D51EB31CD5FA2E00A4D0F5 /* UIGestureRecognizer+JMAdd.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,24 +29,26 @@
 		670966831CCE3D5B00EC5958 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		670966891CCE3D5B00EC5958 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		670966901CCE3D5B00EC5958 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		6709669C1CCE4C0E00EC5958 /* JMPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMPlayer.h; sourceTree = "<group>"; };
-		6709669D1CCE4C0E00EC5958 /* JMPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMPlayer.m; sourceTree = "<group>"; };
 		6709669F1CCE4FF800EC5958 /* JMPlayerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMPlayerController.h; sourceTree = "<group>"; };
 		670966A01CCE4FF800EC5958 /* JMPlayerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMPlayerController.m; sourceTree = "<group>"; };
-		676635151CD21DA9002C745A /* UIImage+JMAdd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+JMAdd.h"; sourceTree = "<group>"; };
-		676635161CD21DA9002C745A /* UIImage+JMAdd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+JMAdd.m"; sourceTree = "<group>"; };
-		677BD55E1CD0A7CA00873C50 /* UIView+JMAdd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+JMAdd.h"; sourceTree = "<group>"; };
-		677BD55F1CD0A7CA00873C50 /* UIView+JMAdd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+JMAdd.m"; sourceTree = "<group>"; };
-		679D1B7C1CD491D900D4C78F /* JMPlayerRotateButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMPlayerRotateButton.h; sourceTree = "<group>"; };
-		679D1B7D1CD491D900D4C78F /* JMPlayerRotateButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMPlayerRotateButton.m; sourceTree = "<group>"; };
 		67C62C641CD3CDEF0099B911 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
-		67C62C661CD3D7940099B911 /* JMPlayerOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMPlayerOverlay.h; sourceTree = "<group>"; };
-		67C62C671CD3D7940099B911 /* JMPlayerOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMPlayerOverlay.m; sourceTree = "<group>"; };
-		67C89F2F1CD37E6400E6FC87 /* JMPlayerPlayButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMPlayerPlayButton.h; sourceTree = "<group>"; };
-		67C89F301CD37E6400E6FC87 /* JMPlayerPlayButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMPlayerPlayButton.m; sourceTree = "<group>"; };
-		67C89F321CD37E9900E6FC87 /* UIControl+JMAdd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIControl+JMAdd.h"; sourceTree = "<group>"; };
-		67C89F331CD37E9900E6FC87 /* UIControl+JMAdd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIControl+JMAdd.m"; sourceTree = "<group>"; };
-		67D2F3DA1CCFD55B00D35769 /* JMPlayerMacro.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JMPlayerMacro.h; sourceTree = "<group>"; };
+		67D51E9B1CD5F6C500A4D0F5 /* UIControl+JMAdd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIControl+JMAdd.h"; sourceTree = "<group>"; };
+		67D51E9C1CD5F6C500A4D0F5 /* UIControl+JMAdd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIControl+JMAdd.m"; sourceTree = "<group>"; };
+		67D51E9D1CD5F6C500A4D0F5 /* UIImage+JMAdd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+JMAdd.h"; sourceTree = "<group>"; };
+		67D51E9E1CD5F6C500A4D0F5 /* UIImage+JMAdd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+JMAdd.m"; sourceTree = "<group>"; };
+		67D51E9F1CD5F6C500A4D0F5 /* UIView+JMAdd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+JMAdd.h"; sourceTree = "<group>"; };
+		67D51EA01CD5F6C500A4D0F5 /* UIView+JMAdd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+JMAdd.m"; sourceTree = "<group>"; };
+		67D51EA11CD5F6C500A4D0F5 /* JMPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMPlayer.h; sourceTree = "<group>"; };
+		67D51EA21CD5F6C500A4D0F5 /* JMPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMPlayer.m; sourceTree = "<group>"; };
+		67D51EA31CD5F6C500A4D0F5 /* JMPlayerMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMPlayerMacro.h; sourceTree = "<group>"; };
+		67D51EA51CD5F6C500A4D0F5 /* JMPlayerOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMPlayerOverlay.h; sourceTree = "<group>"; };
+		67D51EA61CD5F6C500A4D0F5 /* JMPlayerOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMPlayerOverlay.m; sourceTree = "<group>"; };
+		67D51EA71CD5F6C500A4D0F5 /* JMPlayerPlayButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMPlayerPlayButton.h; sourceTree = "<group>"; };
+		67D51EA81CD5F6C500A4D0F5 /* JMPlayerPlayButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMPlayerPlayButton.m; sourceTree = "<group>"; };
+		67D51EA91CD5F6C500A4D0F5 /* JMPlayerRotateButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMPlayerRotateButton.h; sourceTree = "<group>"; };
+		67D51EAA1CD5F6C500A4D0F5 /* JMPlayerRotateButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMPlayerRotateButton.m; sourceTree = "<group>"; };
+		67D51EB21CD5FA2E00A4D0F5 /* UIGestureRecognizer+JMAdd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIGestureRecognizer+JMAdd.h"; sourceTree = "<group>"; };
+		67D51EB31CD5FA2E00A4D0F5 /* UIGestureRecognizer+JMAdd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIGestureRecognizer+JMAdd.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,39 +105,41 @@
 		670966961CCE3DB200EC5958 /* JMPlayer */ = {
 			isa = PBXGroup;
 			children = (
-				677BD55D1CD0A7B100873C50 /* Categories */,
-				6709669B1CCE472500EC5958 /* Views */,
-				67D2F3DA1CCFD55B00D35769 /* JMPlayerMacro.h */,
+				67D51E9A1CD5F6C500A4D0F5 /* Categories */,
+				67D51EA41CD5F6C500A4D0F5 /* Views */,
+				67D51EA31CD5F6C500A4D0F5 /* JMPlayerMacro.h */,
+				67D51EA11CD5F6C500A4D0F5 /* JMPlayer.h */,
+				67D51EA21CD5F6C500A4D0F5 /* JMPlayer.m */,
 			);
 			path = JMPlayer;
 			sourceTree = SOURCE_ROOT;
 		};
-		6709669B1CCE472500EC5958 /* Views */ = {
+		67D51E9A1CD5F6C500A4D0F5 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
-				679D1B7C1CD491D900D4C78F /* JMPlayerRotateButton.h */,
-				679D1B7D1CD491D900D4C78F /* JMPlayerRotateButton.m */,
-				67C89F2F1CD37E6400E6FC87 /* JMPlayerPlayButton.h */,
-				67C89F301CD37E6400E6FC87 /* JMPlayerPlayButton.m */,
-				67C62C661CD3D7940099B911 /* JMPlayerOverlay.h */,
-				67C62C671CD3D7940099B911 /* JMPlayerOverlay.m */,
-				6709669C1CCE4C0E00EC5958 /* JMPlayer.h */,
-				6709669D1CCE4C0E00EC5958 /* JMPlayer.m */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
-		677BD55D1CD0A7B100873C50 /* Categories */ = {
-			isa = PBXGroup;
-			children = (
-				67C89F321CD37E9900E6FC87 /* UIControl+JMAdd.h */,
-				67C89F331CD37E9900E6FC87 /* UIControl+JMAdd.m */,
-				676635151CD21DA9002C745A /* UIImage+JMAdd.h */,
-				676635161CD21DA9002C745A /* UIImage+JMAdd.m */,
-				677BD55E1CD0A7CA00873C50 /* UIView+JMAdd.h */,
-				677BD55F1CD0A7CA00873C50 /* UIView+JMAdd.m */,
+				67D51E9B1CD5F6C500A4D0F5 /* UIControl+JMAdd.h */,
+				67D51E9C1CD5F6C500A4D0F5 /* UIControl+JMAdd.m */,
+				67D51EB21CD5FA2E00A4D0F5 /* UIGestureRecognizer+JMAdd.h */,
+				67D51EB31CD5FA2E00A4D0F5 /* UIGestureRecognizer+JMAdd.m */,
+				67D51E9D1CD5F6C500A4D0F5 /* UIImage+JMAdd.h */,
+				67D51E9E1CD5F6C500A4D0F5 /* UIImage+JMAdd.m */,
+				67D51E9F1CD5F6C500A4D0F5 /* UIView+JMAdd.h */,
+				67D51EA01CD5F6C500A4D0F5 /* UIView+JMAdd.m */,
 			);
 			path = Categories;
+			sourceTree = "<group>";
+		};
+		67D51EA41CD5F6C500A4D0F5 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				67D51EA51CD5F6C500A4D0F5 /* JMPlayerOverlay.h */,
+				67D51EA61CD5F6C500A4D0F5 /* JMPlayerOverlay.m */,
+				67D51EA71CD5F6C500A4D0F5 /* JMPlayerPlayButton.h */,
+				67D51EA81CD5F6C500A4D0F5 /* JMPlayerPlayButton.m */,
+				67D51EA91CD5F6C500A4D0F5 /* JMPlayerRotateButton.h */,
+				67D51EAA1CD5F6C500A4D0F5 /* JMPlayerRotateButton.m */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -207,16 +212,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				679D1B7E1CD491D900D4C78F /* JMPlayerRotateButton.m in Sources */,
-				67C89F311CD37E6400E6FC87 /* JMPlayerPlayButton.m in Sources */,
-				676635171CD21DA9002C745A /* UIImage+JMAdd.m in Sources */,
-				6709669E1CCE4C0E00EC5958 /* JMPlayer.m in Sources */,
 				670966841CCE3D5B00EC5958 /* AppDelegate.m in Sources */,
+				67D51EAC1CD5F6C500A4D0F5 /* UIImage+JMAdd.m in Sources */,
+				67D51EB41CD5FA2E00A4D0F5 /* UIGestureRecognizer+JMAdd.m in Sources */,
+				67D51EAF1CD5F6C500A4D0F5 /* JMPlayerOverlay.m in Sources */,
+				67D51EAE1CD5F6C500A4D0F5 /* JMPlayer.m in Sources */,
+				67D51EB01CD5F6C500A4D0F5 /* JMPlayerPlayButton.m in Sources */,
 				670966811CCE3D5B00EC5958 /* main.m in Sources */,
-				677BD5601CD0A7CA00873C50 /* UIView+JMAdd.m in Sources */,
-				67C89F341CD37E9900E6FC87 /* UIControl+JMAdd.m in Sources */,
-				67C62C681CD3D7940099B911 /* JMPlayerOverlay.m in Sources */,
+				67D51EB11CD5F6C500A4D0F5 /* JMPlayerRotateButton.m in Sources */,
+				67D51EAB1CD5F6C500A4D0F5 /* UIControl+JMAdd.m in Sources */,
 				670966A11CCE4FF800EC5958 /* JMPlayerController.m in Sources */,
+				67D51EAD1CD5F6C500A4D0F5 /* UIView+JMAdd.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

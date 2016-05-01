@@ -10,9 +10,10 @@
 #import "JMPlayerOverlay.h"
 #import "JMPlayerMacro.h"
 #import "UIView+JMAdd.h"
+#import "UIGestureRecognizer+JMAdd.h"
 #import <AVFoundation/AVFoundation.h>
 
-static NSInteger JMPlayerKVOContext = 0;
+static const void *JMPlayerKVOContext;
 
 @interface JMPlayer () {
     JMPlayerStatus _playerStatus;
@@ -184,6 +185,7 @@ static NSInteger JMPlayerKVOContext = 0;
     [self addSubview:self.indicator];
 
     [self _addPlayerObserver];
+//    [self _addGesture];
 }
 
 - (void)_layoutSubviews {
@@ -237,6 +239,16 @@ static NSInteger JMPlayerKVOContext = 0;
                                   [self.delegate player:self currentTime:CMTimeGetSeconds(time)];
                               }
                           }];
+}
+
+- (void)_addGesture {
+    @weakify(self)
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithActionBlock:^(id  _Nonnull sender) {
+        @strongify(self)
+        [self.overlay show];
+    }];
+
+    [self addGestureRecognizer:tapGesture];
 }
 
 - (void)_removePlayerObserver {

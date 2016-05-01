@@ -11,6 +11,7 @@
 #import "JMPlayerPlayButton.h"
 #import "JMPlayerRotateButton.h"
 #import "UIControl+JMAdd.h"
+#import "UIGestureRecognizer+JMAdd.h"
 #import "UIImage+JMAdd.h"
 #import "UIView+JMAdd.h"
 #import "JMPlayerMacro.h"
@@ -59,6 +60,7 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 - (instancetype)init {
     if (self = [super init]) {
         [self _setupSubviews];
+//        [self _addGesture];
     }
 
     return self;
@@ -67,6 +69,7 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         [self _setupSubviews];
+//        [self _addGesture];
     }
 
     return self;
@@ -80,6 +83,30 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
     [self _layoutSubviews];
     [super layoutSubviews];
 }
+
+#pragma mark - Public
+
+- (void)show {
+    if (self.hidden) {
+        NSLog(@"I'm hidden now, I want to show!!!");
+    }
+}
+
+#pragma mark - Override
+
+//- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+//    if ([_slider pointInside:[_slider convertPoint:point fromView:self] withEvent:event]) {
+//        return _slider;
+//    }
+//    if ([_playButton pointInside:[_playButton convertPoint:point fromView:self] withEvent:event]) {
+//        return _playButton;
+//    }
+//    if ([_rotateButton pointInside:[_rotateButton convertPoint:point fromView:self] withEvent:event]) {
+//        return _rotateButton;
+//    }
+//
+//    return [super hitTest:point withEvent:event];
+//}
 
 #pragma mark - Delegate
 
@@ -182,7 +209,7 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 
         @weakify(self)
         [_rotateButton setBlockForControlEvents:UIControlEventTouchUpInside
-                                        block:^(JMPlayerRotateButton *button)
+                                          block:^(JMPlayerRotateButton *button)
          {
              @strongify(self)
              !self.rotateButtonDidTapped ? : self.rotateButtonDidTapped();
@@ -226,6 +253,22 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 
     // update orientation status
     [_rotateButton setNeedsDisplay];
+}
+
+- (void)_addGesture {
+    @weakify(self)
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithActionBlock:^(id  _Nonnull sender) {
+        @strongify(self)
+        [self _hide];
+    }];
+
+    [self addGestureRecognizer:tapGesture];
+}
+
+- (void)_hide {
+    if (!self.hidden) {
+        NSLog(@"I'm show off, let me alone.");
+    }
 }
 
 @end
