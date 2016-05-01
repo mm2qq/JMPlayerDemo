@@ -15,7 +15,7 @@
 
 static const void *JMPlayerKVOContext;
 
-@interface JMPlayer () {
+@interface JMPlayer () <UIGestureRecognizerDelegate> {
     JMPlayerStatus _playerStatus;
     id _timeObserverToken;
     __weak UIView *_previousSuperview;
@@ -107,6 +107,13 @@ static const void *JMPlayerKVOContext;
     }
 }
 
+#pragma mark - Delegate
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    // if overlay is hidden, gesture can make a different
+    return _overlay.isHidden;
+}
+
 #pragma mark - Getters & Setters
 
 - (void)setURLs:(NSArray *)URLs {
@@ -185,7 +192,7 @@ static const void *JMPlayerKVOContext;
     [self addSubview:self.indicator];
 
     [self _addPlayerObserver];
-//    [self _addGesture];
+    [self _addGesture];
 }
 
 - (void)_layoutSubviews {
@@ -248,6 +255,7 @@ static const void *JMPlayerKVOContext;
         [self.overlay show];
     }];
 
+    tapGesture.delegate = self;
     [self addGestureRecognizer:tapGesture];
 }
 

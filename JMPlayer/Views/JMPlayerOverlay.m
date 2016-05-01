@@ -35,7 +35,7 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
     return string;
 }
 
-@interface JMPlayerOverlay () <JMPlayerDelegate>
+@interface JMPlayerOverlay () <JMPlayerDelegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic, weak) JMPlayer *player;
 
@@ -60,7 +60,7 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 - (instancetype)init {
     if (self = [super init]) {
         [self _setupSubviews];
-//        [self _addGesture];
+        [self _addGesture];
     }
 
     return self;
@@ -69,7 +69,7 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         [self _setupSubviews];
-//        [self _addGesture];
+        [self _addGesture];
     }
 
     return self;
@@ -89,24 +89,9 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 - (void)show {
     if (self.hidden) {
         NSLog(@"I'm hidden now, I want to show!!!");
+        self.hidden = NO;
     }
 }
-
-#pragma mark - Override
-
-//- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
-//    if ([_slider pointInside:[_slider convertPoint:point fromView:self] withEvent:event]) {
-//        return _slider;
-//    }
-//    if ([_playButton pointInside:[_playButton convertPoint:point fromView:self] withEvent:event]) {
-//        return _playButton;
-//    }
-//    if ([_rotateButton pointInside:[_rotateButton convertPoint:point fromView:self] withEvent:event]) {
-//        return _rotateButton;
-//    }
-//
-//    return [super hitTest:point withEvent:event];
-//}
 
 #pragma mark - Delegate
 
@@ -127,6 +112,18 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 
 - (void)player:(JMPlayer *)player loadedTime:(CGFloat)time {
     self.progressView.progress = time;
+}
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    CGPoint point = [gestureRecognizer locationInView:self];
+
+    if (CGRectContainsPoint(_slider.frame, point)
+        || CGRectContainsPoint(_playButton.frame, point)
+        || CGRectContainsPoint(_rotateButton.frame, point)) {
+        return NO;
+    }
+
+    return YES;
 }
 
 #pragma mark - Getters & Setters
@@ -262,12 +259,14 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
         [self _hide];
     }];
 
+    tapGesture.delegate = self;
     [self addGestureRecognizer:tapGesture];
 }
 
 - (void)_hide {
     if (!self.hidden) {
         NSLog(@"I'm show off, let me alone.");
+        self.hidden = YES;
     }
 }
 
