@@ -1,6 +1,11 @@
 # JMPlayerDemo
 A simple video player demo based on AVFoundation
 
+### Features
+* Player rotate keep pace with device rotation.
+* Both local resource and web resource video file are available.
+* Left half of screen sliding for brightness control, the other part for volume control, sliding horizontally for playback control.
+
 ### Support
 * iOS 8 or later
 
