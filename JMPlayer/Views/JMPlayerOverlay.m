@@ -24,38 +24,24 @@ static const CGFloat OverlayAnimateDuration = .25f;
 static const CGFloat OverlayAutoHideInterval = 5.f;
 
 static inline NSString * _formatTimeSeconds(CGFloat time) {
-    NSString *string;
     NSInteger hours = (NSInteger)floor(time / 3600);
     NSInteger minutes = (NSInteger)floor(time / 60) % 60;
     NSInteger seconds = (NSInteger)time % 60;
 
-    if (hours > 0) {
-        string = [NSString stringWithFormat:@"%02ld:%02ld:%02ld", (long)hours, (long)minutes, (long)seconds];
-    } else {
-        string = [NSString stringWithFormat:@"%02ld:%02ld", (long)minutes, (long)seconds];
-    }
-
-    return string;
+    return hours > 0 ? [NSString stringWithFormat:@"%02ld:%02ld:%02ld", (long)hours, (long)minutes, (long)seconds] : [NSString stringWithFormat:@"%02ld:%02ld", (long)minutes, (long)seconds];
 }
 
 @interface JMPlayerOverlay () <JMPlayerDelegate, UIGestureRecognizerDelegate>
 {
-    @private
-    __weak NSTimer *_autoHideTimer;
+@private
+    __weak NSTimer *_autoHideTimer;                         ///< Overlay auto hide timer
 }
 
-@property (nonatomic, weak) JMPlayer *player;
-
 @property (nonatomic) UILabel *timeLabel;                   ///< Played time label
-
 @property (nonatomic) UILabel *durationLabel;               ///< Total time label
-
 @property (nonatomic) UISlider *slider;                     ///< Played time progress slider
-
 @property (nonatomic) UIProgressView *progressView;         ///< Loaded time progress view
-
 @property (nonatomic) JMPlayerPlayButton *playButton;       ///< Play & pause button
-
 @property (nonatomic) JMPlayerRotateButton *rotateButton;   ///< Manually rotate screen button
 
 @end
@@ -83,7 +69,7 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 }
 
 - (void)dealloc {
-    // TODO
+    [self _removeGesture];
 }
 
 - (void)layoutSubviews {
@@ -112,6 +98,24 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
              if (finished) {
                  self.hidden = NO;
                  [self _autoHide];
+             }
+         }];
+    }
+}
+
+- (void)hide {
+    if (!self.isHidden) {
+        [UIView animateWithDuration:OverlayAnimateDuration
+                              delay:0
+                            options:UIViewAnimationOptionCurveLinear
+                         animations:^
+         {
+             self.alpha = 0.f;
+         }
+                         completion:^(BOOL finished)
+         {
+             if (finished) {
+                 self.hidden = YES;
              }
          }];
     }
@@ -169,6 +173,7 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
          {
              @strongify(self)
              !self.sliderValueChangedCallback ? : self.sliderValueChangedCallback(slider.value);
+             [self _autoHide];
          }];
     }
 
@@ -189,7 +194,6 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
         _timeLabel = [[UILabel alloc] initWithFrame:(CGRect){CGPointZero, (CGSize){61.f, 17.f}}];
         _timeLabel.font = [UIFont systemFontOfSize:14.f];
         _timeLabel.textColor = OverlayForegroundColor;
-        _timeLabel.text = @"00:00";
     }
 
     return _timeLabel;
@@ -201,7 +205,6 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
         _durationLabel.font = [UIFont systemFontOfSize:14.f];
         _durationLabel.textColor = OverlayForegroundColor;
         _durationLabel.textAlignment = NSTextAlignmentRight;
-        _durationLabel.text = @"00:00";
     }
 
     return _durationLabel;
@@ -284,11 +287,15 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
     @weakify(self)
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithActionBlock:^(id  _Nonnull sender) {
         @strongify(self)
-        [self _hide];
+        [self hide];
     }];
 
     tapGesture.delegate = self;
     [self addGestureRecognizer:tapGesture];
+}
+
+- (void)_removeGesture {
+    [self.gestureRecognizers makeObjectsPerformSelector:@selector(removeAllActionBlocks)];
 }
 
 - (void)_autoHide {
@@ -301,27 +308,9 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
     _autoHideTimer = [NSTimer scheduledTimerWithTimeInterval:OverlayAutoHideInterval
                                                        block:^(NSTimer * _Nonnull timer) {
                                                            @strongify(self)
-                                                           [self _hide];
+                                                           [self hide];
                                                        }
                                                      repeats:NO];
-}
-
-- (void)_hide {
-    if (!self.isHidden) {
-        [UIView animateWithDuration:OverlayAnimateDuration
-                              delay:0
-                            options:UIViewAnimationOptionCurveLinear
-                         animations:^
-         {
-             self.alpha = 0.f;
-         }
-                         completion:^(BOOL finished)
-         {
-             if (finished) {
-                 self.hidden = YES;
-             }
-         }];
-    }
 }
 
 - (void)_reset {

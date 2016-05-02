@@ -12,29 +12,31 @@
 #import "UIView+JMAdd.h"
 #import "UIGestureRecognizer+JMAdd.h"
 #import <AVFoundation/AVFoundation.h>
+#import <MediaPlayer/MediaPlayer.h>
 
 static const void *JMPlayerKVOContext;
+
+typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
+    JMPlayerPanDirectionHorizontal,
+    JMPlayerPanDirectionVertical,
+};
 
 @interface JMPlayer () <UIGestureRecognizerDelegate>
 {
 @private
-    id _timeObserverToken;
-    __weak UIView *_previousSuperview;
+    JMPlayerPanDirection    _panDirection;
+    __weak id               _timeObserverToken;
+    __weak UIView           *_previousSuperview;
 }
 
 @property (nonatomic, copy) NSMutableArray<AVPlayerItem *> *playerItems;
-
 @property (nonatomic) AVQueuePlayer *player;
-
 @property (nonatomic) AVPlayerLayer *playerLayer;
-
 @property (nonatomic) UIActivityIndicatorView *indicator;
-
 @property (nonatomic) JMPlayerOverlay *overlay;
-
-@property (nonatomic) CMTime currentTime;
-
+@property (nonatomic) UISlider *volumeSlider;
 @property (nonatomic) JMPlayerStatus playerStatus;
+@property (nonatomic) CGFloat currentTime;
 
 @end
 
@@ -58,6 +60,7 @@ static const void *JMPlayerKVOContext;
 
 - (void)dealloc {
     [self _removePlayerObserver];
+    [self _removeGesture];
 }
 
 - (void)layoutSubviews {
@@ -113,6 +116,10 @@ static const void *JMPlayerKVOContext;
 #pragma mark - Delegate
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    if ([gestureRecognizer isMemberOfClass:[UIPanGestureRecognizer class]]) {
+        return YES;
+    }
+
     // if overlay is hidden, gesture can make a different
     return _overlay.isHidden;
 }
@@ -124,13 +131,12 @@ static const void *JMPlayerKVOContext;
     [self _setupPlayer];
 }
 
-- (CMTime)currentTime {
-    return _player.currentTime;
-}
+- (void)setCurrentTime:(CGFloat)currentTime {
+    CGFloat duration = CMTimeGetSeconds(_player.currentItem.duration);
+    _currentTime = (currentTime > duration ? duration : currentTime);
 
-- (void)setCurrentTime:(CMTime)currentTime {
     @weakify(self)
-    [_player seekToTime:currentTime
+    [_player seekToTime:CMTimeMakeWithSeconds(_currentTime, 1000)
         toleranceBefore:kCMTimeZero
          toleranceAfter:kCMTimeZero
       completionHandler:^(BOOL finished)
@@ -163,7 +169,7 @@ static const void *JMPlayerKVOContext;
         @weakify(self)
         _overlay.sliderValueChangedCallback = ^(CGFloat value) {
             @strongify(self)
-            self.currentTime = CMTimeMakeWithSeconds(value, 1000);
+            self.currentTime = value;
         };
         _overlay.playButtonDidTapped = ^(BOOL isPlaying) {
             @strongify(self)
@@ -203,6 +209,7 @@ static const void *JMPlayerKVOContext;
 
     [self _addPlayerObserver];
     [self _addGesture];
+    [self _configVolumeSlider];
 }
 
 - (void)_layoutSubviews {
@@ -258,17 +265,6 @@ static const void *JMPlayerKVOContext;
                           }];
 }
 
-- (void)_addGesture {
-    @weakify(self)
-    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithActionBlock:^(id  _Nonnull sender) {
-        @strongify(self)
-        [self.overlay show];
-    }];
-
-    tapGesture.delegate = self;
-    [self addGestureRecognizer:tapGesture];
-}
-
 - (void)_removePlayerObserver {
     if (_timeObserverToken) {
         [_player removeTimeObserver:_timeObserverToken];
@@ -283,6 +279,40 @@ static const void *JMPlayerKVOContext;
     [self removeObserver:self
               forKeyPath:@"player.currentItem.playbackBufferEmpty"
                  context:&JMPlayerKVOContext];
+}
+
+- (void)_addGesture {
+    @weakify(self)
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithActionBlock:^(id  _Nonnull sender) {
+        @strongify(self)
+        [self.overlay show];
+    }];
+
+    UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithActionBlock:^(id  _Nonnull sender) {
+        @strongify(self)
+        [self _handlePanGestureRecognizer:sender];
+    }];
+
+    tapGesture.delegate = self;
+    panGesture.delegate = self;
+
+    [self addGestureRecognizer:tapGesture];
+    [self addGestureRecognizer:panGesture];
+}
+
+- (void)_removeGesture {
+    [self.gestureRecognizers makeObjectsPerformSelector:@selector(removeAllActionBlocks)];
+}
+
+- (void)_configVolumeSlider {
+    MPVolumeView *volumeView = [MPVolumeView new];
+
+    for (UIView *view in volumeView.subviews){
+        if ([view isMemberOfClass:NSClassFromString(@"MPVolumeSlider")]) {
+            _volumeSlider = (UISlider *)view;
+            break;
+        }
+    }
 }
 
 - (void)_play {
@@ -310,6 +340,44 @@ static const void *JMPlayerKVOContext;
         UIDeviceOrientation orientation = UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation) ? UIDeviceOrientationPortrait : UIDeviceOrientationLandscapeLeft;
         [invocation setArgument:&orientation atIndex:2];
         [invocation invoke];
+    }
+}
+
+- (void)_handlePanGestureRecognizer:(UIPanGestureRecognizer *)recognizer {
+    CGPoint location = [recognizer locationInView:self];
+    CGPoint velocity = [recognizer velocityInView:self];
+    // right half screen move to control volume, the left control brightness
+    BOOL volumeControl = (location.x > self.width / 2.f);
+
+    switch (recognizer.state) {
+        case UIGestureRecognizerStateBegan:
+        {
+            if (fabs(velocity.x) > fabs(velocity.y)) {// horizontal move to control playback
+                // show overlay
+                [self.overlay show];
+                _panDirection = JMPlayerPanDirectionHorizontal;
+                _currentTime = CMTimeGetSeconds(_player.currentTime);
+                [self _pause];
+            } else {// vertical move to control volume or brightness
+                _panDirection = JMPlayerPanDirectionVertical;
+            }
+        }
+            break;
+        case UIGestureRecognizerStateChanged:
+        {
+            if (JMPlayerPanDirectionHorizontal == _panDirection) {
+                _currentTime += velocity.x / 200.f;
+                self.currentTime = _currentTime;
+            } else {
+                volumeControl ? (_volumeSlider.value -= velocity.y / 10000) : ([UIScreen mainScreen].brightness -= velocity.y / 10000);
+            }
+        }
+            break;
+        case UIGestureRecognizerStateEnded:
+            [self.overlay hide];
+            break;
+        default:
+            break;
     }
 }
 

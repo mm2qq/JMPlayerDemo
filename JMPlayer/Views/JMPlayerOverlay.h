@@ -23,6 +23,11 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)show;
 
+/**
+ *  Overlay hide with animate manually
+ */
+- (void)hide;
+
 @end
 
 NS_ASSUME_NONNULL_END
