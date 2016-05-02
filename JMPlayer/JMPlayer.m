@@ -17,8 +17,7 @@ static const void *JMPlayerKVOContext;
 
 @interface JMPlayer () <UIGestureRecognizerDelegate>
 {
-    @private
-    JMPlayerStatus _playerStatus;
+@private
     id _timeObserverToken;
     __weak UIView *_previousSuperview;
 }
@@ -29,11 +28,13 @@ static const void *JMPlayerKVOContext;
 
 @property (nonatomic) AVPlayerLayer *playerLayer;
 
-@property (nonatomic) CMTime currentTime;
-
 @property (nonatomic) UIActivityIndicatorView *indicator;
 
 @property (nonatomic) JMPlayerOverlay *overlay;
+
+@property (nonatomic) CMTime currentTime;
+
+@property (nonatomic) JMPlayerStatus playerStatus;
 
 @end
 
@@ -72,18 +73,12 @@ static const void *JMPlayerKVOContext;
         return;
     }
 
-    if ([keyPath isEqualToString:@"player.currentItem.duration"]) {
-        CMTime duration = _player.currentItem.duration;
-        BOOL isValidDuration = CMTIME_IS_NUMERIC(duration) && duration.value != 0;
-        CGFloat durationSeconds = isValidDuration ? CMTimeGetSeconds(duration) : 0.0;
-
-        if (!isValidDuration) {
-            [self.indicator stopAnimating];
-        }
-
-        if ([self.delegate respondsToSelector:@selector(player:itemDuration:)]) {
-            [self.delegate player:self itemDuration:durationSeconds];
-        }
+    if ([keyPath isEqualToString:@"player.currentItem.status"]) {
+        [self.indicator stopAnimating];
+        // AVPlayerItemStatusReadyToPlay map with JMPlayerStatusPaused,
+        // AVPlayerItemStatusUnknown & AVPlayerItemStatusFailed map with JMPlayerStatusIdle
+        AVPlayerItemStatus status = _player.currentItem.status;
+        self.playerStatus = (AVPlayerItemStatusReadyToPlay == status ? JMPlayerStatusPaused : JMPlayerStatusIdle);
     } else if ([keyPath isEqualToString:@"player.currentItem.loadedTimeRanges"]) {
         NSArray *loadedTimeRages = _player.currentItem.loadedTimeRanges;
 
@@ -95,17 +90,20 @@ static const void *JMPlayerKVOContext;
         CGFloat progress = (start + duration) / CMTimeGetSeconds(_player.currentItem.duration);
 
         // if buffered duration is more than 5 seconds and not in pasued, go on playing
-        if (duration > 5.0 && _playerStatus != JMPlayerStatusPaused) {
+        if (duration > 5.0 && JMPlayerStatusPaused != _playerStatus) {
             [self.indicator stopAnimating];
             [self _play];
         }
 
-        if ([self.delegate respondsToSelector:@selector(player:loadedTime:)]) {
-            [self.delegate player:self loadedTime:progress];
+        if ([_delegate respondsToSelector:@selector(player:itemDuration:loadedTime:)]) {
+            [_delegate player:self itemDuration:CMTimeGetSeconds(_player.currentItem.duration) loadedTime:progress];
         }
     } else if ([keyPath isEqualToString:@"player.currentItem.playbackBufferEmpty"]) {
-        _playerStatus = JMPlayerStatusBuffering;
-        [self.indicator startAnimating];
+        // if player complete playing, ignore this status
+        if (JMPlayerStatusIdle != _playerStatus) {
+            [self.indicator startAnimating];
+            self.playerStatus = JMPlayerStatusBuffering;
+        }
     }
 }
 
@@ -137,6 +135,14 @@ static const void *JMPlayerKVOContext;
          @strongify(self)
          finished ? [self _play] : [self _pause];
      }];
+}
+
+- (void)setPlayerStatus:(JMPlayerStatus)playerStatus {
+    _playerStatus = playerStatus;
+
+    if ([_delegate respondsToSelector:@selector(player:currentStatus:)]) {
+        [_delegate player:self currentStatus:_playerStatus];
+    }
 }
 
 - (UIActivityIndicatorView *)indicator {
@@ -186,12 +192,11 @@ static const void *JMPlayerKVOContext;
 
     _player = [AVQueuePlayer queuePlayerWithItems:_playerItems];
     _playerLayer = [AVPlayerLayer playerLayerWithPlayer:_player];
-    _playerStatus = JMPlayerStatusPaused;
 
     self.backgroundColor = [UIColor blackColor];
     [self.layer addSublayer:_playerLayer];
-    [self addSubview:self.overlay];
     [self addSubview:self.indicator];
+    [self addSubview:self.overlay];
 
     [self _addPlayerObserver];
     [self _addGesture];
@@ -228,7 +233,7 @@ static const void *JMPlayerKVOContext;
 
 - (void)_addPlayerObserver {
     [self addObserver:self
-           forKeyPath:@"player.currentItem.duration"
+           forKeyPath:@"player.currentItem.status"
               options:NSKeyValueObservingOptionNew
               context:&JMPlayerKVOContext];
     [self addObserver:self
@@ -267,7 +272,7 @@ static const void *JMPlayerKVOContext;
     }
 
     [self removeObserver:self
-              forKeyPath:@"player.currentItem.duration"
+              forKeyPath:@"player.currentItem.status"
                  context:&JMPlayerKVOContext];
     [self removeObserver:self
               forKeyPath:@"player.currentItem.loadedTimeRanges"
@@ -278,16 +283,18 @@ static const void *JMPlayerKVOContext;
 }
 
 - (void)_play {
-    if (_playerStatus != JMPlayerStatusPlaying) {
+    if (JMPlayerStatusPlaying != _playerStatus
+        && JMPlayerStatusIdle != _playerStatus) {
         [_player play];
-        _playerStatus = JMPlayerStatusPlaying;
+        self.playerStatus = JMPlayerStatusPlaying;
     }
 }
 
 - (void)_pause {
-    if (_playerStatus != JMPlayerStatusPaused) {
+    if (JMPlayerStatusPaused != _playerStatus
+        && JMPlayerStatusIdle != _playerStatus) {
         [_player pause];
-        _playerStatus = JMPlayerStatusPaused;
+        self.playerStatus = JMPlayerStatusPaused;
     }
 }
 

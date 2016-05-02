@@ -119,22 +119,19 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 
 #pragma mark - Delegate
 
+- (void)player:(JMPlayer *)player currentStatus:(JMPlayerStatus)status {
+    _playButton.playing = (JMPlayerStatusPlaying == status);
+}
+
 - (void)player:(JMPlayer *)player currentTime:(CGFloat)time {
     self.slider.value = time;
     self.timeLabel.text = _formatTimeSeconds(time);
 }
 
-- (void)player:(JMPlayer *)player itemDuration:(CGFloat)duration {
+- (void)player:(JMPlayer *)player itemDuration:(CGFloat)duration loadedTime:(CGFloat)time {
     self.slider.enabled = (duration != 0.0);
     self.slider.maximumValue = duration;
     self.durationLabel.text = _formatTimeSeconds(duration);
-
-    if (!self.slider.enabled) {
-        self.timeLabel.text = _formatTimeSeconds(0.0);
-    }
-}
-
-- (void)player:(JMPlayer *)player loadedTime:(CGFloat)time {
     self.progressView.progress = time;
 }
 
@@ -216,7 +213,6 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
          {
              @strongify(self)
              !self.playButtonDidTapped ? : self.playButtonDidTapped(button.isPlaying);
-             button.playing = !button.isPlaying;
 
              // ready to hide overlay
              [self _autoHide];
@@ -321,6 +317,16 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
              }
          }];
     }
+}
+
+- (void)_reset {
+    self.slider.enabled = NO;
+    self.slider.maximumValue = 1.f;
+    self.slider.value = 0.f;
+    self.progressView.progress = 0.f;
+    self.durationLabel.text = _formatTimeSeconds(0.f);
+    self.timeLabel.text = _formatTimeSeconds(0.f);
+    self.playButton.playing = NO;
 }
 
 @end
