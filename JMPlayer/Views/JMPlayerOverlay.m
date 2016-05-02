@@ -120,7 +120,12 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 #pragma mark - Delegate
 
 - (void)player:(JMPlayer *)player currentStatus:(JMPlayerStatus)status {
-    _playButton.playing = (JMPlayerStatusPlaying == status);
+    // overlay should reset it's subviews
+    if (JMPlayerStatusIdle == status) {
+        [self _reset];
+    } else {
+        _playButton.playing = (JMPlayerStatusPlaying == status);
+    }
 }
 
 - (void)player:(JMPlayer *)player currentTime:(CGFloat)time {

@@ -75,10 +75,13 @@ static const void *JMPlayerKVOContext;
 
     if ([keyPath isEqualToString:@"player.currentItem.status"]) {
         [self.indicator stopAnimating];
-        // AVPlayerItemStatusReadyToPlay map with JMPlayerStatusPaused,
-        // AVPlayerItemStatusUnknown & AVPlayerItemStatusFailed map with JMPlayerStatusIdle
-        AVPlayerItemStatus status = _player.currentItem.status;
-        self.playerStatus = (AVPlayerItemStatusReadyToPlay == status ? JMPlayerStatusPaused : JMPlayerStatusIdle);
+
+        if (_player.rate == 0.f) {
+            self.playerStatus = JMPlayerStatusPaused;
+        } else {
+            self.playerStatus = (AVPlayerItemStatusReadyToPlay == _player.currentItem.status
+                                 ? JMPlayerStatusPlaying : JMPlayerStatusIdle);
+        }
     } else if ([keyPath isEqualToString:@"player.currentItem.loadedTimeRanges"]) {
         NSArray *loadedTimeRages = _player.currentItem.loadedTimeRanges;
 
