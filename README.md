@@ -5,6 +5,11 @@ A simple video player demo based on AVFoundation
 * Player rotate keep pace with device rotation.
 * Both local resource and web resource video file are available.
 * Left half of screen sliding for brightness control, the other part for volume control, sliding horizontally for playback control.
+ 
+### Coming Soon
+* Player skin configuration.
+* Play list feature.
+* Local cache for files.
 
 ### Support
 * iOS 8 or later
