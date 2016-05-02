@@ -9,7 +9,7 @@ A simple video player demo based on AVFoundation
 ### Coming Soon
 * Player skin configuration.
 * Play list feature.
-* Local cache for files.
+* Local storage for files and cache web resource.
 
 ### Support
 * iOS 8 or later
