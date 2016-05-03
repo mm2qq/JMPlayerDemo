@@ -22,6 +22,8 @@
 		67D51EB41CD5FA2E00A4D0F5 /* UIGestureRecognizer+JMAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 67D51EB31CD5FA2E00A4D0F5 /* UIGestureRecognizer+JMAdd.m */; };
 		67D51EBA1CD63E3E00A4D0F5 /* NSTimer+JMAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 67D51EB91CD63E3E00A4D0F5 /* NSTimer+JMAdd.m */; };
 		67DA60951CD88B3E00F239EE /* JMPlayerNextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 67DA60941CD88B3E00F239EE /* JMPlayerNextButton.m */; };
+		67DA609B1CD8A8D600F239EE /* video.json in Resources */ = {isa = PBXBuildFile; fileRef = 67DA609A1CD8A8D600F239EE /* video.json */; };
+		67DA60A11CD8AE5E00F239EE /* NSDictionary+JMAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 67DA60A01CD8AE5E00F239EE /* NSDictionary+JMAdd.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,6 +57,9 @@
 		67D51EB91CD63E3E00A4D0F5 /* NSTimer+JMAdd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSTimer+JMAdd.m"; sourceTree = "<group>"; };
 		67DA60931CD88B3E00F239EE /* JMPlayerNextButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMPlayerNextButton.h; sourceTree = "<group>"; };
 		67DA60941CD88B3E00F239EE /* JMPlayerNextButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMPlayerNextButton.m; sourceTree = "<group>"; };
+		67DA609A1CD8A8D600F239EE /* video.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = video.json; sourceTree = "<group>"; };
+		67DA609F1CD8AE5E00F239EE /* NSDictionary+JMAdd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+JMAdd.h"; sourceTree = "<group>"; };
+		67DA60A01CD8AE5E00F239EE /* NSDictionary+JMAdd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+JMAdd.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +99,7 @@
 				6709669F1CCE4FF800EC5958 /* JMPlayerController.h */,
 				670966A01CCE4FF800EC5958 /* JMPlayerController.m */,
 				670966881CCE3D5B00EC5958 /* Main.storyboard */,
+				67DA609A1CD8A8D600F239EE /* video.json */,
 				670966901CCE3D5B00EC5958 /* Info.plist */,
 				6709667F1CCE3D5B00EC5958 /* Supporting Files */,
 			);
@@ -123,6 +129,8 @@
 		67D51E9A1CD5F6C500A4D0F5 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				67DA609F1CD8AE5E00F239EE /* NSDictionary+JMAdd.h */,
+				67DA60A01CD8AE5E00F239EE /* NSDictionary+JMAdd.m */,
 				67D51EB81CD63E3E00A4D0F5 /* NSTimer+JMAdd.h */,
 				67D51EB91CD63E3E00A4D0F5 /* NSTimer+JMAdd.m */,
 				67D51E9B1CD5F6C500A4D0F5 /* UIControl+JMAdd.h */,
@@ -211,6 +219,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6709668A1CCE3D5B00EC5958 /* Main.storyboard in Resources */,
+				67DA609B1CD8A8D600F239EE /* video.json in Resources */,
 				67C62C651CD3CDEF0099B911 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -231,6 +240,7 @@
 				67D51EB01CD5F6C500A4D0F5 /* JMPlayerPlayButton.m in Sources */,
 				670966811CCE3D5B00EC5958 /* main.m in Sources */,
 				67DA60951CD88B3E00F239EE /* JMPlayerNextButton.m in Sources */,
+				67DA60A11CD8AE5E00F239EE /* NSDictionary+JMAdd.m in Sources */,
 				67D51EB11CD5F6C500A4D0F5 /* JMPlayerRotateButton.m in Sources */,
 				67D51EAB1CD5F6C500A4D0F5 /* UIControl+JMAdd.m in Sources */,
 				670966A11CCE4FF800EC5958 /* JMPlayerController.m in Sources */,

@@ -38,7 +38,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerStatus) {
 /**
  *  Player's source, reset will reset the player too
  */
-@property (nonatomic, copy) NSArray *URLs;
+@property (nonatomic, copy) NSArray<NSURL *> *URLs;
 
 /**
  *  Initialize a player view with video URL

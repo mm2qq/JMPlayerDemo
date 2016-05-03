@@ -32,6 +32,7 @@
     CGContextAddLineToPoint(ctx, sqrt(3.0) * (width - start.y) / 2.f + lineWidth, width - start.y);
     CGContextSetStrokeColorWithColor(ctx, OverlayForegroundColor.CGColor);
     CGContextSetLineWidth(ctx, lineWidth);
+    CGContextSetLineCap(ctx, kCGLineCapRound);
     CGContextStrokePath(ctx);
 }
 

@@ -8,6 +8,7 @@
 
 #import "JMPlayerController.h"
 #import "JMPlayer.h"
+#import "NSDictionary+JMAdd.h"
 
 @interface JMPlayerController ()
 
@@ -21,12 +22,19 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    NSURL *URL1 = [NSURL URLWithString:@"http://baobab.wdjcdn.com/14573563182394.mp4"];
-    NSURL *URL2 = [NSURL URLWithString:@"http://baobab.wdjcdn.com/1458389678814huanjieyaliBastaw_x264.mp4"];
-    NSURL *URL3 = [NSURL URLWithString:@"http://baobab.wdjcdn.com/1457716884751linghunbanlv_x264.mp4"];
-    NSURL *URL4 = [NSURL URLWithString:@"http://baobab.wdjcdn.com/14587093851044544c.mp4"];
-    NSURL *URL5 = [NSURL URLWithString:@"https://movielalavideos.blob.core.windows.net/videos/563cb51788b8c6db4b000376.mp4"];
-    _player = [[JMPlayer alloc] initWithURLs:@[URL1, URL2, URL3, URL4, URL5]];
+//    NSURL *testUrl = [NSURL URLWithString:@"https://movielalavideos.blob.core.windows.net/videos/563cb51788b8c6db4b000376.mp4"];
+
+    NSData *data = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"video" ofType:@"json"]];
+    NSDictionary *dic = [NSDictionary dictionaryWithJson:data];
+    NSArray *videoes = dic[@"videoList"];
+    NSMutableArray *urls = [NSMutableArray arrayWithCapacity:videoes.count];
+
+    for (NSDictionary *video in videoes) {
+        NSURL *url = [NSURL URLWithString:video[@"playUrl"]];
+        [urls addObject:url];
+    }
+
+    _player = [[JMPlayer alloc] initWithURLs:urls];
     [_playerWrapperView addSubview:_player];
 }
 

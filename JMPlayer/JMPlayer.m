@@ -129,7 +129,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
 
 #pragma mark - Getters & Setters
 
-- (void)setURLs:(NSArray *)URLs {
+- (void)setURLs:(NSArray<NSURL *> *)URLs {
     _URLs = URLs.copy;
     [self _setupPlayer];
 }
