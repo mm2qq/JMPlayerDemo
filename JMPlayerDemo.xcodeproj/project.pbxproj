@@ -21,6 +21,7 @@
 		67D51EB11CD5F6C500A4D0F5 /* JMPlayerRotateButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 67D51EAA1CD5F6C500A4D0F5 /* JMPlayerRotateButton.m */; };
 		67D51EB41CD5FA2E00A4D0F5 /* UIGestureRecognizer+JMAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 67D51EB31CD5FA2E00A4D0F5 /* UIGestureRecognizer+JMAdd.m */; };
 		67D51EBA1CD63E3E00A4D0F5 /* NSTimer+JMAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 67D51EB91CD63E3E00A4D0F5 /* NSTimer+JMAdd.m */; };
+		67DA60951CD88B3E00F239EE /* JMPlayerNextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 67DA60941CD88B3E00F239EE /* JMPlayerNextButton.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +53,8 @@
 		67D51EB31CD5FA2E00A4D0F5 /* UIGestureRecognizer+JMAdd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIGestureRecognizer+JMAdd.m"; sourceTree = "<group>"; };
 		67D51EB81CD63E3E00A4D0F5 /* NSTimer+JMAdd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSTimer+JMAdd.h"; sourceTree = "<group>"; };
 		67D51EB91CD63E3E00A4D0F5 /* NSTimer+JMAdd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSTimer+JMAdd.m"; sourceTree = "<group>"; };
+		67DA60931CD88B3E00F239EE /* JMPlayerNextButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMPlayerNextButton.h; sourceTree = "<group>"; };
+		67DA60941CD88B3E00F239EE /* JMPlayerNextButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMPlayerNextButton.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,6 +146,8 @@
 				67D51EA81CD5F6C500A4D0F5 /* JMPlayerPlayButton.m */,
 				67D51EA91CD5F6C500A4D0F5 /* JMPlayerRotateButton.h */,
 				67D51EAA1CD5F6C500A4D0F5 /* JMPlayerRotateButton.m */,
+				67DA60931CD88B3E00F239EE /* JMPlayerNextButton.h */,
+				67DA60941CD88B3E00F239EE /* JMPlayerNextButton.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -225,6 +230,7 @@
 				67D51EAE1CD5F6C500A4D0F5 /* JMPlayer.m in Sources */,
 				67D51EB01CD5F6C500A4D0F5 /* JMPlayerPlayButton.m in Sources */,
 				670966811CCE3D5B00EC5958 /* main.m in Sources */,
+				67DA60951CD88B3E00F239EE /* JMPlayerNextButton.m in Sources */,
 				67D51EB11CD5F6C500A4D0F5 /* JMPlayerRotateButton.m in Sources */,
 				67D51EAB1CD5F6C500A4D0F5 /* UIControl+JMAdd.m in Sources */,
 				670966A11CCE4FF800EC5958 /* JMPlayerController.m in Sources */,

@@ -86,14 +86,17 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
                                  ? JMPlayerStatusPlaying : JMPlayerStatusIdle);
         }
     } else if ([keyPath isEqualToString:@"player.currentItem.loadedTimeRanges"]) {
-        NSArray *loadedTimeRages = _player.currentItem.loadedTimeRanges;
+        CMTime totalDuration         = _player.currentItem.duration;
+        BOOL validDuration           = CMTIME_IS_NUMERIC(totalDuration) && totalDuration.value != 0;
+        NSArray *loadedTimeRages     = _player.currentItem.loadedTimeRanges;
+        CGFloat totalDurationSeconds = validDuration ? CMTimeGetSeconds(totalDuration) : 0.f;
 
         if (loadedTimeRages.count < 1) return;
 
-        CMTimeRange timeRage = [(NSValue *)loadedTimeRages[0] CMTimeRangeValue];
-        CGFloat        start = CMTimeGetSeconds(timeRage.start);
-        CGFloat     duration = CMTimeGetSeconds(timeRage.duration);
-        CGFloat     progress = (start + duration) / CMTimeGetSeconds(_player.currentItem.duration);
+        CMTimeRange timeRage  = [(NSValue *)loadedTimeRages[0] CMTimeRangeValue];
+        CGFloat        start  = CMTimeGetSeconds(timeRage.start);
+        CGFloat     duration  = CMTimeGetSeconds(timeRage.duration);
+        CGFloat     progress  = (start + duration) / totalDurationSeconds;
 
         // if buffered duration is more than 5 seconds and not in pasued, go on playing
         if (duration > 5.0 && JMPlayerStatusPaused != _playerStatus) {
@@ -102,7 +105,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
         }
 
         if ([_delegate respondsToSelector:@selector(player:itemDuration:loadedTime:)]) {
-            [_delegate player:self itemDuration:CMTimeGetSeconds(_player.currentItem.duration) loadedTime:progress];
+            [_delegate player:self itemDuration:totalDurationSeconds loadedTime:progress];
         }
     } else if ([keyPath isEqualToString:@"player.currentItem.playbackBufferEmpty"]) {
         // if player complete playing, ignore this status
@@ -174,6 +177,10 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
         _overlay.playButtonDidTapped = ^(BOOL isPlaying) {
             @strongify(self)
             isPlaying ? [self _pause] : [self _play];
+        };
+        _overlay.nextButtonDidTapped = ^{
+            @strongify(self)
+            [self _playNext];
         };
         _overlay.rotateButtonDidTapped = ^{
             @strongify(self)
@@ -329,6 +336,11 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
         [_player pause];
         self.playerStatus = JMPlayerStatusPaused;
     }
+}
+
+- (void)_playNext {
+    // TODO: Is here need some check?
+    [_player advanceToNextItem];
 }
 
 - (void)_toggleScreenOrientation {

@@ -9,6 +9,7 @@
 #import "JMPlayerOverlay.h"
 #import "JMPlayer.h"
 #import "JMPlayerPlayButton.h"
+#import "JMPlayerNextButton.h"
 #import "JMPlayerRotateButton.h"
 #import "NSTimer+JMAdd.h"
 #import "UIControl+JMAdd.h"
@@ -42,6 +43,7 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 @property (nonatomic) UISlider             *slider;         ///< Played time progress slider
 @property (nonatomic) UIProgressView       *progressView;   ///< Loaded time progress view
 @property (nonatomic) JMPlayerPlayButton   *playButton;     ///< Play & pause button
+@property (nonatomic) JMPlayerNextButton   *nextButton;     ///< Advanced play next item button
 @property (nonatomic) JMPlayerRotateButton *rotateButton;   ///< Manually rotate screen button
 
 @end
@@ -133,14 +135,14 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 }
 
 - (void)player:(JMPlayer *)player currentTime:(CGFloat)time {
-    self.slider.value = time;
+    self.slider.value   = time;
     self.timeLabel.text = _formatTimeSeconds(time);
 }
 
 - (void)player:(JMPlayer *)player itemDuration:(CGFloat)duration loadedTime:(CGFloat)time {
-    self.slider.enabled = (duration != 0.0);
-    self.slider.maximumValue = duration;
-    self.durationLabel.text = _formatTimeSeconds(duration);
+    self.slider.enabled        = (duration != 0.0);
+    self.slider.maximumValue   = duration;
+    self.durationLabel.text    = _formatTimeSeconds(duration);
     self.progressView.progress = time;
 }
 
@@ -149,6 +151,7 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 
     if (CGRectContainsPoint(_slider.frame, point)
         || CGRectContainsPoint(_playButton.frame, point)
+        || CGRectContainsPoint(_nextButton.frame, point)
         || CGRectContainsPoint(_rotateButton.frame, point)) {
         return NO;
     }
@@ -160,12 +163,16 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 
 - (UISlider *)slider {
     if (!_slider) {
-        _slider = [UISlider new];
+        _slider                       = [UISlider new];
         _slider.minimumTrackTintColor = OverlayProgressLightColor;
 
-        [_slider setMaximumTrackImage:[UIImage imageWithColor:OverlayBackgroundColor size:(CGSize){1.f, OverlaySliderHeigt}] forState:UIControlStateNormal];
+        [_slider setMaximumTrackImage:[UIImage imageWithColor:OverlayBackgroundColor
+                                                         size:(CGSize){1.f, OverlaySliderHeigt}]
+                             forState:UIControlStateNormal];
 
-        [_slider setThumbImage:[UIImage imageWithColor:OverlayProgressColor size:(CGSize){2.f, OverlaySliderHeigt}] forState:UIControlStateNormal];
+        [_slider setThumbImage:[UIImage imageWithColor:OverlayProgressColor
+                                                  size:(CGSize){2.f, OverlaySliderHeigt}]
+                      forState:UIControlStateNormal];
 
         @weakify(self)
         [_slider setBlockForControlEvents:UIControlEventValueChanged
@@ -182,7 +189,7 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 
 - (UIProgressView *)progressView {
     if (!_progressView) {
-        _progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
+        _progressView                   = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
         _progressView.progressTintColor = OverlayForegroundColor;
     }
 
@@ -191,9 +198,10 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 
 - (UILabel *)timeLabel {
     if (!_timeLabel) {
-        _timeLabel = [[UILabel alloc] initWithFrame:(CGRect){CGPointZero, (CGSize){61.f, 17.f}}];
-        _timeLabel.font = [UIFont systemFontOfSize:14.f];
+        _timeLabel           = [[UILabel alloc] initWithFrame:(CGRect){CGPointZero, (CGSize){61.f, 17.f}}];
+        _timeLabel.font      = [UIFont systemFontOfSize:14.f];
         _timeLabel.textColor = OverlayForegroundColor;
+        _timeLabel.text      = @"00:00";
     }
 
     return _timeLabel;
@@ -201,10 +209,11 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 
 - (UILabel *)durationLabel {
     if (!_durationLabel) {
-        _durationLabel = [[UILabel alloc] initWithFrame:(CGRect){CGPointZero, (CGSize){61.f, 17.f}}];
-        _durationLabel.font = [UIFont systemFontOfSize:14.f];
-        _durationLabel.textColor = OverlayForegroundColor;
+        _durationLabel               = [[UILabel alloc] initWithFrame:(CGRect){CGPointZero, (CGSize){61.f, 17.f}}];
+        _durationLabel.font          = [UIFont systemFontOfSize:14.f];
+        _durationLabel.textColor     = OverlayForegroundColor;
         _durationLabel.textAlignment = NSTextAlignmentRight;
+        _durationLabel.text          = @"00:00";
     }
 
     return _durationLabel;
@@ -212,7 +221,7 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 
 - (JMPlayerPlayButton *)playButton {
     if (!_playButton) {
-        _playButton = [[JMPlayerPlayButton alloc] initWithFrame:(CGRect){CGPointZero, (CGSize){OverlayPlayButtonWidth, OverlayPlayButtonWidth}}];
+        _playButton                 = [[JMPlayerPlayButton alloc] initWithFrame:(CGRect){CGPointZero, (CGSize){OverlayPlayButtonWidth, OverlayPlayButtonWidth}}];
         _playButton.backgroundColor = [UIColor clearColor];
 
         @weakify(self)
@@ -230,9 +239,26 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
     return _playButton;
 }
 
+- (JMPlayerNextButton *)nextButton {
+    if (!_nextButton) {
+        _nextButton                 = [[JMPlayerNextButton alloc] initWithFrame:(CGRect){CGPointZero, (CGSize){OverlaySliderHeigt, OverlaySliderHeigt}}];
+        _nextButton.backgroundColor = OverlayBackgroundColor;
+
+        @weakify(self)
+        [_nextButton setBlockForControlEvents:UIControlEventTouchUpInside
+                                          block:^(JMPlayerNextButton *button)
+         {
+             @strongify(self)
+             !self.nextButtonDidTapped ? : self.nextButtonDidTapped();
+         }];
+    }
+
+    return _nextButton;
+}
+
 - (JMPlayerRotateButton *)rotateButton {
     if (!_rotateButton) {
-        _rotateButton = [[JMPlayerRotateButton alloc] initWithFrame:(CGRect){CGPointZero, (CGSize){OverlaySliderHeigt, OverlaySliderHeigt}}];
+        _rotateButton                 = [[JMPlayerRotateButton alloc] initWithFrame:(CGRect){CGPointZero, (CGSize){OverlaySliderHeigt, OverlaySliderHeigt}}];
         _rotateButton.backgroundColor = OverlayBackgroundColor;
 
         @weakify(self)
@@ -255,29 +281,33 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
     [self addSubview:self.progressView];
     [self addSubview:self.slider];
     [self addSubview:self.playButton];
+    [self addSubview:self.nextButton];
     [self addSubview:self.rotateButton];
 }
 
 - (void)_layoutSubviews {
-    _slider.width = self.width - OverlaySliderHeigt + OverlayControlMargin;
-    _slider.height = OverlaySliderHeigt;
-    _slider.bottom = self.height;
-    _slider.left = self.left - OverlayControlMargin / 2.f;
+    _nextButton.bottom    = self.height;
+    _nextButton.left      = self.left;
 
-    _progressView.width = self.width - OverlaySliderHeigt;
-    _progressView.height = _slider.height;
-    _progressView.center = _slider.center;
+    _rotateButton.bottom  = self.height;
+    _rotateButton.right   = self.right;
 
-    _timeLabel.bottom = self.height;
-    _timeLabel.left = _slider.left + OverlayControlMargin;
+    _slider.width         = self.width - _nextButton.width - _rotateButton.width + OverlayControlMargin;
+    _slider.height        = _nextButton.height;
+    _slider.bottom        = self.height;
+    _slider.left          = _nextButton.right - OverlayControlMargin / 2.f;
+
+    _progressView.width   = self.width - _nextButton.width - _rotateButton.width;
+    _progressView.height  = _slider.height;
+    _progressView.center  = _slider.center;
+
+    _timeLabel.bottom     = self.height;
+    _timeLabel.left       = _slider.left + OverlayControlMargin;
 
     _durationLabel.bottom = self.height;
-    _durationLabel.right = _slider.right - OverlayControlMargin;
+    _durationLabel.right  = _slider.right - OverlayControlMargin;
 
-    _rotateButton.bottom = self.height;
-    _rotateButton.right = self.right;
-
-    _playButton.center = self.center;
+    _playButton.center    = self.center;
 
     // update orientation status
     [_rotateButton setNeedsDisplay];
@@ -314,13 +344,13 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 }
 
 - (void)_reset {
-    self.slider.enabled = NO;
-    self.slider.maximumValue = 1.f;
-    self.slider.value = 0.f;
+    self.slider.enabled        = NO;
+    self.slider.maximumValue   = 1.f;
+    self.slider.value          = 0.f;
     self.progressView.progress = 0.f;
-    self.durationLabel.text = _formatTimeSeconds(0.f);
-    self.timeLabel.text = _formatTimeSeconds(0.f);
-    self.playButton.playing = NO;
+    self.durationLabel.text    = _formatTimeSeconds(0.f);
+    self.timeLabel.text        = _formatTimeSeconds(0.f);
+    self.playButton.playing    = NO;
 }
 
 @end
