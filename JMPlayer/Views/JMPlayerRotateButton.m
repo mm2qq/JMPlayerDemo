@@ -12,10 +12,10 @@
 @implementation JMPlayerRotateButton
 
 - (void)drawRect:(CGRect)rect {
-    CGFloat width     = MIN(rect.size.width, rect.size.height);
+    CGFloat     width = MIN(rect.size.width, rect.size.height);
     CGFloat lineWidth = 2.f;
-    CGPoint start     = CGPointMake(lineWidth, lineWidth);
-    CGPoint end       = CGPointMake(width * 5.f / 12.f, width * 5.f / 12.f);
+    CGPoint     start = CGPointMake(lineWidth, lineWidth);
+    CGPoint       end = CGPointMake(width * 5.f / 12.f, width * 5.f / 12.f);
 
     // create initial path
     CGMutablePathRef path = CGPathCreateMutable();
@@ -32,7 +32,7 @@
     }
 
     // CTM tranform
-    CGContextRef ctx   = UIGraphicsGetCurrentContext();
+    CGContextRef   ctx = UIGraphicsGetCurrentContext();
     CGPathRef pathCopy = CGPathCreateCopy(path);
     CGContextAddPath(ctx, path);
     CGContextTranslateCTM(ctx, width, width);

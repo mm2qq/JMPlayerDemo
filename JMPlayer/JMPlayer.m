@@ -86,17 +86,17 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
                                  ? JMPlayerStatusPlaying : JMPlayerStatusIdle);
         }
     } else if ([keyPath isEqualToString:@"player.currentItem.loadedTimeRanges"]) {
-        CMTime totalDuration         = _player.currentItem.duration;
-        BOOL validDuration           = CMTIME_IS_NUMERIC(totalDuration) && totalDuration.value != 0;
-        NSArray *loadedTimeRages     = _player.currentItem.loadedTimeRanges;
+        CMTime         totalDuration = _player.currentItem.duration;
+        BOOL           validDuration = CMTIME_IS_NUMERIC(totalDuration) && totalDuration.value != 0;
+        NSArray     *loadedTimeRages = _player.currentItem.loadedTimeRanges;
         CGFloat totalDurationSeconds = validDuration ? CMTimeGetSeconds(totalDuration) : 0.f;
 
         if (loadedTimeRages.count < 1) return;
 
-        CMTimeRange timeRage  = [(NSValue *)loadedTimeRages[0] CMTimeRangeValue];
-        CGFloat        start  = CMTimeGetSeconds(timeRage.start);
-        CGFloat     duration  = CMTimeGetSeconds(timeRage.duration);
-        CGFloat     progress  = (start + duration) / totalDurationSeconds;
+        CMTimeRange timeRage = [(NSValue *)loadedTimeRages[0] CMTimeRangeValue];
+        CGFloat        start = CMTimeGetSeconds(timeRage.start);
+        CGFloat     duration = CMTimeGetSeconds(timeRage.duration);
+        CGFloat     progress = (start + duration) / totalDurationSeconds;
 
         // if buffered duration is more than 5 seconds and not in pasued, go on playing
         if (duration > 5.0 && JMPlayerStatusPaused != _playerStatus) {
@@ -136,7 +136,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
 
 - (void)setCurrentTime:(CGFloat)currentTime {
     CGFloat duration = CMTimeGetSeconds(_player.currentItem.duration);
-    _currentTime = (currentTime > duration ? duration : currentTime);
+    _currentTime     = (currentTime > duration ? duration : currentTime);
 
     @weakify(self)
     [_player seekToTime:CMTimeMakeWithSeconds(_currentTime, 1000)
@@ -180,7 +180,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
         };
         _overlay.nextButtonDidTapped = ^{
             @strongify(self)
-            [self _playNext];
+            [self.player advanceToNextItem];
         };
         _overlay.rotateButtonDidTapped = ^{
             @strongify(self)
@@ -331,21 +331,16 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
 }
 
 - (void)_pause {
-    if (JMPlayerStatusPaused != _playerStatus
+    if (JMPlayerStatusPaused  != _playerStatus
         && JMPlayerStatusIdle != _playerStatus) {
         [_player pause];
         self.playerStatus = JMPlayerStatusPaused;
     }
 }
 
-- (void)_playNext {
-    // TODO: Is here need some check?
-    [_player advanceToNextItem];
-}
-
 - (void)_toggleScreenOrientation {
     if ([[UIDevice currentDevice] respondsToSelector:@selector(setOrientation:)]) {
-        SEL selector             = NSSelectorFromString(@"setOrientation:");
+        SEL             selector = NSSelectorFromString(@"setOrientation:");
         NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[UIDevice instanceMethodSignatureForSelector:selector]];
         [invocation setSelector:selector];
         [invocation setTarget:[UIDevice currentDevice]];
@@ -356,8 +351,8 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
 }
 
 - (void)_handlePanGestureRecognizer:(UIPanGestureRecognizer *)recognizer {
-    CGPoint location   = [recognizer locationInView:self];
-    CGPoint velocity   = [recognizer velocityInView:self];
+    CGPoint   location = [recognizer locationInView:self];
+    CGPoint   velocity = [recognizer velocityInView:self];
     // right half screen move to control volume, the left control brightness
     BOOL volumeControl = (location.x > self.width / 2.f);
 

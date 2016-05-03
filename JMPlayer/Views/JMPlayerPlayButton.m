@@ -12,24 +12,24 @@
 @implementation JMPlayerPlayButton
 
 - (void)drawRect:(CGRect)rect {
-    CGFloat width    = MIN(rect.size.width, rect.size.height);
-    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    CGFloat     width = MIN(rect.size.width, rect.size.height);
+    CGFloat rectWidth = 13.f;
+    CGPoint     start = CGPointMake(0.f, 0.f);
+    CGContextRef  ctx = UIGraphicsGetCurrentContext();
 
     if (self.isPlaying) {
-        CGRect leftRect  = (CGRect){0.f, 0.f, 13.f, width};
-        CGRect rightRect = (CGRect){width - 13.f, 0.f, 13.f, width};
+        CGRect  leftRect = (CGRect){start, rectWidth, width};
+        CGRect rightRect = (CGRect){width - rectWidth, start.y, rectWidth, width};
         CGRect rects[2];
         rects[0] = leftRect;
         rects[1] = rightRect;
         CGContextAddRects(ctx, rects, 2);
     } else {
-        CGContextBeginPath(ctx);
         CGPoint points[3];
-        points[0] = CGPointMake(0.f, 0.f);
-        points[1] = CGPointMake(0.f, width);
+        points[0] = start;
+        points[1] = CGPointMake(start.x, width);
         points[2] = CGPointMake(sqrt(3.0) * width / 2.f, width / 2.f);
         CGContextAddLines(ctx, points, 3);
-        CGContextClosePath(ctx);
     }
 
     CGContextSetShouldAntialias(ctx, true);
