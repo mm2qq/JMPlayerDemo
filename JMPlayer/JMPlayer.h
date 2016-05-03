@@ -13,9 +13,8 @@ NS_ASSUME_NONNULL_BEGIN
 @class JMPlayer;
 
 typedef NS_ENUM(NSUInteger, JMPlayerStatus) {
-    JMPlayerStatusIdle,                 ///< Indicates that player is idle, default status
-    JMPlayerStatusPlaying,              ///< Indicates that the player is playing now
     JMPlayerStatusPaused,               ///< Indicates that the player is paused
+    JMPlayerStatusPlaying,              ///< Indicates that the player is playing now
     JMPlayerStatusBuffering,            ///< Indicates that the player is buffering
 };
 

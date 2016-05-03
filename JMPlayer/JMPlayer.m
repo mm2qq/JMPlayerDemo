@@ -77,14 +77,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
     }
 
     if ([keyPath isEqualToString:@"player.currentItem.status"]) {
-        [self.indicator stopAnimating];
-
-        if (_player.rate == 0.f) {
-            self.playerStatus = JMPlayerStatusPaused;
-        } else {
-            self.playerStatus = (AVPlayerItemStatusReadyToPlay == _player.currentItem.status
-                                 ? JMPlayerStatusPlaying : JMPlayerStatusIdle);
-        }
+        self.playerStatus = _player.rate == 0.f ? JMPlayerStatusPaused : JMPlayerStatusPlaying;
     } else if ([keyPath isEqualToString:@"player.currentItem.loadedTimeRanges"]) {
         CMTime         totalDuration = _player.currentItem.duration;
         BOOL           validDuration = CMTIME_IS_NUMERIC(totalDuration) && totalDuration.value != 0;
@@ -100,7 +93,6 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
 
         // if buffered duration is more than 5 seconds and not in pasued, go on playing
         if (duration > 5.0 && JMPlayerStatusPaused != _playerStatus) {
-            [self.indicator stopAnimating];
             [self _play];
         }
 
@@ -108,11 +100,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
             [_delegate player:self itemDuration:totalDurationSeconds loadedTime:progress];
         }
     } else if ([keyPath isEqualToString:@"player.currentItem.playbackBufferEmpty"]) {
-        // if player complete playing, ignore this status
-        if (JMPlayerStatusIdle != _playerStatus) {
-            [self.indicator startAnimating];
-            self.playerStatus = JMPlayerStatusBuffering;
-        }
+        self.playerStatus = JMPlayerStatusBuffering;
     }
 }
 
@@ -150,10 +138,15 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
 }
 
 - (void)setPlayerStatus:(JMPlayerStatus)playerStatus {
-    _playerStatus = playerStatus;
+    // update status only in status really changed
+    if (playerStatus != _playerStatus) {
+        _playerStatus = playerStatus;
+        JMPlayerStatusBuffering == _playerStatus ?
+        [self.indicator startAnimating] : [self.indicator stopAnimating];
 
-    if ([_delegate respondsToSelector:@selector(player:currentStatus:)]) {
-        [_delegate player:self currentStatus:_playerStatus];
+        if ([_delegate respondsToSelector:@selector(player:currentStatus:)]) {
+            [_delegate player:self currentStatus:_playerStatus];
+        }
     }
 }
 
@@ -324,16 +317,14 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
 }
 
 - (void)_play {
-    if (JMPlayerStatusPlaying != _playerStatus
-        && JMPlayerStatusIdle != _playerStatus) {
+    if (JMPlayerStatusPlaying != _playerStatus) {
         [_player play];
         self.playerStatus = JMPlayerStatusPlaying;
     }
 }
 
 - (void)_pause {
-    if (JMPlayerStatusPaused  != _playerStatus
-        && JMPlayerStatusIdle != _playerStatus) {
+    if (JMPlayerStatusPaused  != _playerStatus) {
         [_player pause];
         self.playerStatus = JMPlayerStatusPaused;
     }

@@ -132,11 +132,12 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 #pragma mark - Delegate
 
 - (void)player:(JMPlayer *)player currentStatus:(JMPlayerStatus)status {
-    // overlay should reset it's subviews
-    if (JMPlayerStatusIdle == status) {
+    _playButton.playing = (JMPlayerStatusPlaying == status);
+
+    // reset overlay while one item or all items finished
+    if (JMPlayerStatusBuffering == status
+        && self.slider.value >= self.slider.maximumValue) {
         [self _resetPlayer:player];
-    } else {
-        _playButton.playing = (JMPlayerStatusPlaying == status);
     }
 }
 
@@ -146,7 +147,7 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 }
 
 - (void)player:(JMPlayer *)player itemDuration:(CGFloat)duration loadedTime:(CGFloat)time {
-    self.slider.enabled        = (duration != 0.0);
+    self.slider.enabled        = (duration != 0.f);
     self.slider.maximumValue   = duration;
     self.titleLabel.text       = [player.items[_itemIndex] itemTitle];
     self.durationLabel.text    = _formatTimeSeconds(duration);
@@ -304,6 +305,7 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
                                         block:^(JMPlayerNextButton *button)
          {
              @strongify(self)
+             [self _resetPlayer:(JMPlayer *)self.superview];
              !self.nextButtonDidTapped ? : self.nextButtonDidTapped();
          }];
     }
@@ -416,11 +418,10 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 
     self.titleLabel.text       = @"";
     self.slider.enabled        = NO;
-    self.slider.maximumValue   = 1.f;
     self.slider.value          = 0.f;
     self.progressView.progress = 0.f;
-    self.durationLabel.text    = _formatTimeSeconds(0.f);
-    self.timeLabel.text        = _formatTimeSeconds(0.f);
+    self.timeLabel.text        = @"00:00";
+    self.durationLabel.text    = @"00:00";
     self.playButton.playing    = NO;
 }
 
