@@ -10,6 +10,18 @@
 #import "JMPlayer.h"
 #import "NSDictionary+JMAdd.h"
 
+@interface TestItem : NSObject <JMPlayerItemInfoDelegate>
+
+@property (nonatomic, copy) NSString *itemTitle;
+@property (nonatomic, copy) NSString *itemDescription;
+@property (nonatomic, copy) NSString *playUrl;
+
+@end
+
+@implementation TestItem
+
+@end
+
 @interface JMPlayerController ()
 
 @property (weak, nonatomic) IBOutlet UIView *playerWrapperView;
@@ -22,19 +34,22 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-//    NSURL *testUrl = [NSURL URLWithString:@"https://movielalavideos.blob.core.windows.net/videos/563cb51788b8c6db4b000376.mp4"];
+    // NSURL *testUrl = [NSURL URLWithString:@"https://movielalavideos.blob.core.windows.net/videos/563cb51788b8c6db4b000376.mp4"];
 
     NSData *data = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"video" ofType:@"json"]];
     NSDictionary *dic = [NSDictionary dictionaryWithJson:data];
-    NSArray *videoes = dic[@"videoList"];
-    NSMutableArray *urls = [NSMutableArray arrayWithCapacity:videoes.count];
+    NSArray *videoList = dic[@"videoList"];
+    NSMutableArray *items = [NSMutableArray arrayWithCapacity:videoList.count];
 
-    for (NSDictionary *video in videoes) {
-        NSURL *url = [NSURL URLWithString:video[@"playUrl"]];
-        [urls addObject:url];
+    for (NSDictionary *video in videoList) {
+        TestItem *item = [TestItem new];
+        [item setItemTitle:video[@"title"]];
+        [item setItemDescription:video[@"description"]];
+        [item setPlayUrl:video[@"playUrl"]];
+        [items addObject:item];
     }
 
-    _player = [[JMPlayer alloc] initWithURLs:urls];
+    _player = [[JMPlayer alloc] initWithItems:items];
     [_playerWrapperView addSubview:_player];
 }
 

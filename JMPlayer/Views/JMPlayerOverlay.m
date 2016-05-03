@@ -32,7 +32,7 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
     return hours > 0 ? [NSString stringWithFormat:@"%02ld:%02ld:%02ld", (long)hours, (long)minutes, (long)seconds] : [NSString stringWithFormat:@"%02ld:%02ld", (long)minutes, (long)seconds];
 }
 
-@interface JMPlayerOverlay () <JMPlayerDelegate, UIGestureRecognizerDelegate>
+@interface JMPlayerOverlay () <JMPlayerPlaybackDelegate, UIGestureRecognizerDelegate>
 {
 @private
     __weak NSTimer *_autoHideTimer;                         ///< Overlay auto hide timer

@@ -19,7 +19,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerStatus) {
     JMPlayerStatusBuffering,            ///< Indicates that the player is buffering
 };
 
-@protocol JMPlayerDelegate <NSObject>
+@protocol JMPlayerPlaybackDelegate <NSObject>
 
 @optional
 
@@ -31,23 +31,31 @@ typedef NS_ENUM(NSUInteger, JMPlayerStatus) {
 
 @end
 
+@protocol JMPlayerItemInfoDelegate <NSObject>
+
+@property (nullable, nonatomic, copy) NSString *itemTitle;
+@property (nullable, nonatomic, copy) NSString *itemDescription;
+@property (nonatomic, copy)           NSString *playUrl;
+
+@end
+
 @interface JMPlayer : UIView
 
-@property (nonatomic, weak) id<JMPlayerDelegate> delegate;
+@property (nonatomic, weak) id<JMPlayerPlaybackDelegate> delegate;
 
 /**
  *  Player's source, reset will reset the player too
  */
-@property (nonatomic, copy) NSArray<NSURL *> *URLs;
+@property (nonatomic, copy) NSArray<id<JMPlayerItemInfoDelegate>> *items;
 
 /**
- *  Initialize a player view with video URL
+ *  Initialize a player view with video item
  *
- *  @param URLs  The array of video URL
+ *  @param items  The array of video item
  *
  *  @return Instance of player view
  */
-- (instancetype)initWithURLs:(NSArray<NSURL *> *)URLs;
+- (instancetype)initWithItems:(NSArray<id<JMPlayerItemInfoDelegate>> *)items;
 
 @end
 

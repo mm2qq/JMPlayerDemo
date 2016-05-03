@@ -49,9 +49,9 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
     [self _setupPlayer];
 }
 
-- (instancetype)initWithURLs:(NSArray<NSURL *> *)URLs {
+- (instancetype)initWithItems:(NSArray<id<JMPlayerItemInfoDelegate>> *)items {
     if (self = [super init]) {
-        _URLs = URLs.copy;
+        _items = items.copy;
         [self _setupPlayer];
     }
 
@@ -129,8 +129,8 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
 
 #pragma mark - Getters & Setters
 
-- (void)setURLs:(NSArray<NSURL *> *)URLs {
-    _URLs = URLs.copy;
+- (void)setItems:(NSArray<id<JMPlayerItemInfoDelegate>> *)items {
+    _items = items.copy;
     [self _setupPlayer];
 }
 
@@ -187,7 +187,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
             [self _toggleScreenOrientation];
         };
 
-        self.delegate = (id<JMPlayerDelegate>)_overlay;
+        self.delegate = (id<JMPlayerPlaybackDelegate>)_overlay;
     }
 
     return _overlay;
@@ -196,14 +196,15 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
 #pragma mark - Private
 
 - (void)_setupPlayer {
-    if (!_URLs || _URLs.count == 0) {
+    if (!_items || _items.count == 0) {
         return;
     }
 
-    _playerItems = [NSMutableArray arrayWithCapacity:_URLs.count];
+    _playerItems = [NSMutableArray arrayWithCapacity:_items.count];
 
-    for (NSURL *URL in _URLs) {
-        [_playerItems addObject:[AVPlayerItem playerItemWithURL:URL]];
+    for (id<JMPlayerItemInfoDelegate> item in _items) {
+        NSString *urlString = [item playUrl];
+        [_playerItems addObject:[AVPlayerItem playerItemWithURL:[NSURL URLWithString:urlString]]];
     }
 
     _player      = [AVQueuePlayer queuePlayerWithItems:_playerItems];
