@@ -8,6 +8,8 @@
 
 #import "JMPlayerOverlay.h"
 #import "JMPlayer.h"
+#import "JMPlayerCloseButton.h"
+#import "JMPlayerListButton.h"
 #import "JMPlayerPlayButton.h"
 #import "JMPlayerNextButton.h"
 #import "JMPlayerRotateButton.h"
@@ -18,7 +20,7 @@
 #import "UIView+JMAdd.h"
 #import "JMPlayerMacro.h"
 
-static const CGFloat      OverlaySliderHeigt = 36.f;
+static const CGFloat      OverlayBannerHeigt = 36.f;
 static const CGFloat  OverlayPlayButtonWidth = 40.f;
 static const CGFloat    OverlayControlMargin = 4.f;
 static const CGFloat  OverlayAnimateDuration = .25f;
@@ -35,13 +37,17 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 @interface JMPlayerOverlay () <JMPlayerPlaybackDelegate, UIGestureRecognizerDelegate>
 {
 @private
-    __weak NSTimer *_autoHideTimer;                         ///< Overlay auto hide timer
+    NSUInteger     _itemIndex;         ///< Video item's index
+    __weak NSTimer *_autoHideTimer;    ///< Overlay auto hide timer
 }
 
+@property (nonatomic) UILabel              *titleLabel;     ///< Video title label
 @property (nonatomic) UILabel              *timeLabel;      ///< Played time label
 @property (nonatomic) UILabel              *durationLabel;  ///< Total time label
 @property (nonatomic) UISlider             *slider;         ///< Played time progress slider
 @property (nonatomic) UIProgressView       *progressView;   ///< Loaded time progress view
+@property (nonatomic) JMPlayerCloseButton  *closeButton;    ///< Close button
+@property (nonatomic) JMPlayerListButton   *listButton;     ///< List button
 @property (nonatomic) JMPlayerPlayButton   *playButton;     ///< Play & pause button
 @property (nonatomic) JMPlayerNextButton   *nextButton;     ///< Advanced play next item button
 @property (nonatomic) JMPlayerRotateButton *rotateButton;   ///< Manually rotate screen button
@@ -128,7 +134,7 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 - (void)player:(JMPlayer *)player currentStatus:(JMPlayerStatus)status {
     // overlay should reset it's subviews
     if (JMPlayerStatusIdle == status) {
-        [self _reset];
+        [self _resetPlayer:player];
     } else {
         _playButton.playing = (JMPlayerStatusPlaying == status);
     }
@@ -142,6 +148,7 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 - (void)player:(JMPlayer *)player itemDuration:(CGFloat)duration loadedTime:(CGFloat)time {
     self.slider.enabled        = (duration != 0.0);
     self.slider.maximumValue   = duration;
+    self.titleLabel.text       = [player.items[_itemIndex] itemTitle];
     self.durationLabel.text    = _formatTimeSeconds(duration);
     self.progressView.progress = time;
 }
@@ -150,6 +157,9 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
     CGPoint point = [gestureRecognizer locationInView:self];
 
     if (CGRectContainsPoint(_slider.frame, point)
+        || CGRectContainsPoint(_titleLabel.frame, point)
+        || CGRectContainsPoint(_closeButton.frame, point)
+        || CGRectContainsPoint(_listButton.frame, point)
         || CGRectContainsPoint(_playButton.frame, point)
         || CGRectContainsPoint(_nextButton.frame, point)
         || CGRectContainsPoint(_rotateButton.frame, point)) {
@@ -167,11 +177,11 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
         _slider.minimumTrackTintColor = OverlayProgressLightColor;
 
         [_slider setMaximumTrackImage:[UIImage imageWithColor:OverlayBackgroundColor
-                                                         size:(CGSize){1.f, OverlaySliderHeigt}]
+                                                         size:(CGSize){1.f, OverlayBannerHeigt}]
                              forState:UIControlStateNormal];
 
         [_slider setThumbImage:[UIImage imageWithColor:OverlayProgressColor
-                                                  size:(CGSize){2.f, OverlaySliderHeigt}]
+                                                  size:(CGSize){2.f, OverlayBannerHeigt}]
                       forState:UIControlStateNormal];
 
         @weakify(self)
@@ -196,9 +206,20 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
     return _progressView;
 }
 
+- (UILabel *)titleLabel {
+    if (!_titleLabel) {
+        _titleLabel = [[UILabel alloc] initWithFrame:(CGRect){CGPointZero, 1.f, OverlayBannerHeigt}];
+        _titleLabel.font            = [UIFont boldSystemFontOfSize:16.f];
+        _titleLabel.textColor       = OverlayForegroundColor;
+        _titleLabel.backgroundColor = OverlayBackgroundColor;
+    }
+
+    return _titleLabel;
+}
+
 - (UILabel *)timeLabel {
     if (!_timeLabel) {
-        _timeLabel           = [[UILabel alloc] initWithFrame:(CGRect){CGPointZero, (CGSize){61.f, 17.f}}];
+        _timeLabel           = [[UILabel alloc] initWithFrame:(CGRect){CGPointZero, 61.f, 17.f}];
         _timeLabel.font      = [UIFont systemFontOfSize:14.f];
         _timeLabel.textColor = OverlayForegroundColor;
         _timeLabel.text      = @"00:00";
@@ -209,7 +230,7 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 
 - (UILabel *)durationLabel {
     if (!_durationLabel) {
-        _durationLabel               = [[UILabel alloc] initWithFrame:(CGRect){CGPointZero, (CGSize){61.f, 17.f}}];
+        _durationLabel               = [[UILabel alloc] initWithFrame:(CGRect){CGPointZero, 61.f, 17.f}];
         _durationLabel.font          = [UIFont systemFontOfSize:14.f];
         _durationLabel.textColor     = OverlayForegroundColor;
         _durationLabel.textAlignment = NSTextAlignmentRight;
@@ -219,9 +240,43 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
     return _durationLabel;
 }
 
+- (JMPlayerCloseButton *)closeButton {
+    if (!_closeButton) {
+        _closeButton                 = [[JMPlayerCloseButton alloc] initWithFrame:(CGRect){CGPointZero, OverlayBannerHeigt, OverlayBannerHeigt}];
+        _closeButton.backgroundColor = OverlayBackgroundColor;
+
+        // @weakify(self)
+        [_closeButton setBlockForControlEvents:UIControlEventTouchUpInside
+                                         block:^(JMPlayerCloseButton *button)
+         {
+             // @strongify(self)
+             NSLog(@"Close button tapped.");
+         }];
+    }
+
+    return _closeButton;
+}
+
+- (JMPlayerListButton *)listButton {
+    if (!_listButton) {
+        _listButton                 = [[JMPlayerListButton alloc] initWithFrame:(CGRect){CGPointZero, OverlayBannerHeigt, OverlayBannerHeigt}];
+        _listButton.backgroundColor = OverlayBackgroundColor;
+
+        // @weakify(self)
+        [_listButton setBlockForControlEvents:UIControlEventTouchUpInside
+                                        block:^(JMPlayerCloseButton *button)
+         {
+             // @strongify(self)
+             NSLog(@"List button tapped.");
+         }];
+    }
+
+    return _listButton;
+}
+
 - (JMPlayerPlayButton *)playButton {
     if (!_playButton) {
-        _playButton                 = [[JMPlayerPlayButton alloc] initWithFrame:(CGRect){CGPointZero, (CGSize){OverlayPlayButtonWidth, OverlayPlayButtonWidth}}];
+        _playButton                 = [[JMPlayerPlayButton alloc] initWithFrame:(CGRect){CGPointZero, OverlayPlayButtonWidth, OverlayPlayButtonWidth}];
         _playButton.backgroundColor = [UIColor clearColor];
 
         @weakify(self)
@@ -241,12 +296,12 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 
 - (JMPlayerNextButton *)nextButton {
     if (!_nextButton) {
-        _nextButton                 = [[JMPlayerNextButton alloc] initWithFrame:(CGRect){CGPointZero, (CGSize){OverlaySliderHeigt, OverlaySliderHeigt}}];
+        _nextButton                 = [[JMPlayerNextButton alloc] initWithFrame:(CGRect){CGPointZero, OverlayBannerHeigt, OverlayBannerHeigt}];
         _nextButton.backgroundColor = OverlayBackgroundColor;
 
         @weakify(self)
         [_nextButton setBlockForControlEvents:UIControlEventTouchUpInside
-                                          block:^(JMPlayerNextButton *button)
+                                        block:^(JMPlayerNextButton *button)
          {
              @strongify(self)
              !self.nextButtonDidTapped ? : self.nextButtonDidTapped();
@@ -258,7 +313,7 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 
 - (JMPlayerRotateButton *)rotateButton {
     if (!_rotateButton) {
-        _rotateButton                 = [[JMPlayerRotateButton alloc] initWithFrame:(CGRect){CGPointZero, (CGSize){OverlaySliderHeigt, OverlaySliderHeigt}}];
+        _rotateButton                 = [[JMPlayerRotateButton alloc] initWithFrame:(CGRect){CGPointZero, OverlayBannerHeigt, OverlayBannerHeigt}];
         _rotateButton.backgroundColor = OverlayBackgroundColor;
 
         @weakify(self)
@@ -276,6 +331,9 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 #pragma mark - Private
 
 - (void)_setupSubviews {
+    [self addSubview:self.titleLabel];
+    [self addSubview:self.closeButton];
+    [self addSubview:self.listButton];
     [self addSubview:self.timeLabel];
     [self addSubview:self.durationLabel];
     [self addSubview:self.progressView];
@@ -286,6 +344,16 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 }
 
 - (void)_layoutSubviews {
+    _closeButton.top      = self.top;
+    _closeButton.left     = self.left;
+
+    _listButton.top       = self.top;
+    _listButton.right     = self.right;
+
+    _titleLabel.width     = self.width - _closeButton.width - _listButton.width;
+    _titleLabel.top       = self.top;
+    _titleLabel.left      = _closeButton.right;
+
     _nextButton.bottom    = self.height;
     _nextButton.left      = self.left;
 
@@ -343,7 +411,10 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
                                                      repeats:NO];
 }
 
-- (void)_reset {
+- (void)_resetPlayer:(JMPlayer *)player {
+    if (++_itemIndex == player.items.count) _itemIndex = 0;
+
+    self.titleLabel.text       = @"";
     self.slider.enabled        = NO;
     self.slider.maximumValue   = 1.f;
     self.slider.value          = 0.f;

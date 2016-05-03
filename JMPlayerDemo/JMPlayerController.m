@@ -34,8 +34,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    // NSURL *testUrl = [NSURL URLWithString:@"https://movielalavideos.blob.core.windows.net/videos/563cb51788b8c6db4b000376.mp4"];
-
     NSData *data = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"video" ofType:@"json"]];
     NSDictionary *dic = [NSDictionary dictionaryWithJson:data];
     NSArray *videoList = dic[@"videoList"];

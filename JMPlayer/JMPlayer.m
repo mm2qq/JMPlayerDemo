@@ -24,9 +24,9 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
 @interface JMPlayer () <UIGestureRecognizerDelegate>
 {
 @private
-    JMPlayerPanDirection    _panDirection;                                  ///< Pan gesture direction
-    __weak id               _timeObserverToken;                             ///< Player's periodic timer
-    __weak UIView           *_previousSuperview;                            ///< Player's previous superview
+    JMPlayerPanDirection _panDirection;               ///< Pan gesture direction
+    __weak id            _timeObserverToken;          ///< Player's periodic timer
+    __weak UIView        *_previousSuperview;         ///< Player's previous superview
 }
 
 @property (nonatomic, copy) NSMutableArray<AVPlayerItem *> *playerItems;    ///< Item to be player

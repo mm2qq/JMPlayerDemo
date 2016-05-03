@@ -11,6 +11,8 @@
 		670966841CCE3D5B00EC5958 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 670966831CCE3D5B00EC5958 /* AppDelegate.m */; };
 		6709668A1CCE3D5B00EC5958 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 670966881CCE3D5B00EC5958 /* Main.storyboard */; };
 		670966A11CCE4FF800EC5958 /* JMPlayerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 670966A01CCE4FF800EC5958 /* JMPlayerController.m */; };
+		672030C61CD8DC3800654E8F /* JMPlayerCloseButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 672030C51CD8DC3800654E8F /* JMPlayerCloseButton.m */; };
+		672030C91CD8DC5400654E8F /* JMPlayerListButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 672030C81CD8DC5400654E8F /* JMPlayerListButton.m */; };
 		67C62C651CD3CDEF0099B911 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 67C62C641CD3CDEF0099B911 /* Default-568h@2x.png */; };
 		67D51EAB1CD5F6C500A4D0F5 /* UIControl+JMAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 67D51E9C1CD5F6C500A4D0F5 /* UIControl+JMAdd.m */; };
 		67D51EAC1CD5F6C500A4D0F5 /* UIImage+JMAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 67D51E9E1CD5F6C500A4D0F5 /* UIImage+JMAdd.m */; };
@@ -35,6 +37,10 @@
 		670966901CCE3D5B00EC5958 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6709669F1CCE4FF800EC5958 /* JMPlayerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMPlayerController.h; sourceTree = "<group>"; };
 		670966A01CCE4FF800EC5958 /* JMPlayerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMPlayerController.m; sourceTree = "<group>"; };
+		672030C41CD8DC3800654E8F /* JMPlayerCloseButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMPlayerCloseButton.h; sourceTree = "<group>"; };
+		672030C51CD8DC3800654E8F /* JMPlayerCloseButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMPlayerCloseButton.m; sourceTree = "<group>"; };
+		672030C71CD8DC5400654E8F /* JMPlayerListButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JMPlayerListButton.h; sourceTree = "<group>"; };
+		672030C81CD8DC5400654E8F /* JMPlayerListButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JMPlayerListButton.m; sourceTree = "<group>"; };
 		67C62C641CD3CDEF0099B911 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		67D51E9B1CD5F6C500A4D0F5 /* UIControl+JMAdd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIControl+JMAdd.h"; sourceTree = "<group>"; };
 		67D51E9C1CD5F6C500A4D0F5 /* UIControl+JMAdd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIControl+JMAdd.m"; sourceTree = "<group>"; };
@@ -150,6 +156,10 @@
 			children = (
 				67D51EA51CD5F6C500A4D0F5 /* JMPlayerOverlay.h */,
 				67D51EA61CD5F6C500A4D0F5 /* JMPlayerOverlay.m */,
+				672030C41CD8DC3800654E8F /* JMPlayerCloseButton.h */,
+				672030C51CD8DC3800654E8F /* JMPlayerCloseButton.m */,
+				672030C71CD8DC5400654E8F /* JMPlayerListButton.h */,
+				672030C81CD8DC5400654E8F /* JMPlayerListButton.m */,
 				67D51EA71CD5F6C500A4D0F5 /* JMPlayerPlayButton.h */,
 				67D51EA81CD5F6C500A4D0F5 /* JMPlayerPlayButton.m */,
 				67D51EA91CD5F6C500A4D0F5 /* JMPlayerRotateButton.h */,
@@ -237,10 +247,12 @@
 				67D51EBA1CD63E3E00A4D0F5 /* NSTimer+JMAdd.m in Sources */,
 				67D51EAF1CD5F6C500A4D0F5 /* JMPlayerOverlay.m in Sources */,
 				67D51EAE1CD5F6C500A4D0F5 /* JMPlayer.m in Sources */,
+				672030C61CD8DC3800654E8F /* JMPlayerCloseButton.m in Sources */,
 				67D51EB01CD5F6C500A4D0F5 /* JMPlayerPlayButton.m in Sources */,
 				670966811CCE3D5B00EC5958 /* main.m in Sources */,
 				67DA60951CD88B3E00F239EE /* JMPlayerNextButton.m in Sources */,
 				67DA60A11CD8AE5E00F239EE /* NSDictionary+JMAdd.m in Sources */,
+				672030C91CD8DC5400654E8F /* JMPlayerListButton.m in Sources */,
 				67D51EB11CD5F6C500A4D0F5 /* JMPlayerRotateButton.m in Sources */,
 				67D51EAB1CD5F6C500A4D0F5 /* UIControl+JMAdd.m in Sources */,
 				670966A11CCE4FF800EC5958 /* JMPlayerController.m in Sources */,
