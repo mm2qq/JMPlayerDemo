@@ -24,19 +24,19 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
 @interface JMPlayer () <UIGestureRecognizerDelegate>
 {
 @private
-    JMPlayerPanDirection    _panDirection;
-    __weak id               _timeObserverToken;
-    __weak UIView           *_previousSuperview;
+    JMPlayerPanDirection    _panDirection;                                  ///< Pan gesture direction
+    __weak id               _timeObserverToken;                             ///< Player's periodic timer
+    __weak UIView           *_previousSuperview;                            ///< Player's previous superview
 }
 
-@property (nonatomic, copy) NSMutableArray<AVPlayerItem *> *playerItems;
-@property (nonatomic) AVQueuePlayer *player;
-@property (nonatomic) AVPlayerLayer *playerLayer;
-@property (nonatomic) UIActivityIndicatorView *indicator;
-@property (nonatomic) JMPlayerOverlay *overlay;
-@property (nonatomic) UISlider *volumeSlider;
-@property (nonatomic) JMPlayerStatus playerStatus;
-@property (nonatomic) CGFloat currentTime;
+@property (nonatomic, copy) NSMutableArray<AVPlayerItem *> *playerItems;    ///< Item to be player
+@property (nonatomic) AVQueuePlayer                        *player;         ///< Player instance
+@property (nonatomic) AVPlayerLayer                        *playerLayer;    ///< Player layer instance
+@property (nonatomic) UIActivityIndicatorView              *indicator;      ///< Player buffer status indicator
+@property (nonatomic) JMPlayerOverlay                      *overlay;        ///< Player control overlay
+@property (nonatomic) UISlider                             *volumeSlider;   ///< Player volume control slider
+@property (nonatomic) JMPlayerStatus                       playerStatus;    ///< Player's status
+@property (nonatomic) CGFloat                              currentTime;     ///< Player's current time
 
 @end
 
@@ -91,9 +91,9 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
         if (loadedTimeRages.count < 1) return;
 
         CMTimeRange timeRage = [(NSValue *)loadedTimeRages[0] CMTimeRangeValue];
-        CGFloat start = CMTimeGetSeconds(timeRage.start);
-        CGFloat duration = CMTimeGetSeconds(timeRage.duration);
-        CGFloat progress = (start + duration) / CMTimeGetSeconds(_player.currentItem.duration);
+        CGFloat        start = CMTimeGetSeconds(timeRage.start);
+        CGFloat     duration = CMTimeGetSeconds(timeRage.duration);
+        CGFloat     progress = (start + duration) / CMTimeGetSeconds(_player.currentItem.duration);
 
         // if buffered duration is more than 5 seconds and not in pasued, go on playing
         if (duration > 5.0 && JMPlayerStatusPaused != _playerStatus) {
@@ -199,7 +199,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
         [_playerItems addObject:[AVPlayerItem playerItemWithURL:URL]];
     }
 
-    _player = [AVQueuePlayer queuePlayerWithItems:_playerItems];
+    _player      = [AVQueuePlayer queuePlayerWithItems:_playerItems];
     _playerLayer = [AVPlayerLayer playerLayerWithPlayer:_player];
 
     self.backgroundColor = [UIColor blackColor];
@@ -231,14 +231,14 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
             [_previousSuperview addSubview:self];
         }
 
-        self.frame = self.superview.frame;
+        self.frame  = self.superview.frame;
         self.height = self.superview.width * 9.f / 16.f;
         self.center = self.superview.center;
     }
 
     _playerLayer.frame = self.bounds;
-    _overlay.frame = self.bounds;
-    _indicator.center = self.center;
+    _overlay.frame     = self.bounds;
+    _indicator.center  = self.center;
 }
 
 - (void)_addPlayerObserver {
@@ -333,7 +333,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
 
 - (void)_toggleScreenOrientation {
     if ([[UIDevice currentDevice] respondsToSelector:@selector(setOrientation:)]) {
-        SEL selector = NSSelectorFromString(@"setOrientation:");
+        SEL selector             = NSSelectorFromString(@"setOrientation:");
         NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[UIDevice instanceMethodSignatureForSelector:selector]];
         [invocation setSelector:selector];
         [invocation setTarget:[UIDevice currentDevice]];
@@ -344,8 +344,8 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
 }
 
 - (void)_handlePanGestureRecognizer:(UIPanGestureRecognizer *)recognizer {
-    CGPoint location = [recognizer locationInView:self];
-    CGPoint velocity = [recognizer velocityInView:self];
+    CGPoint location   = [recognizer locationInView:self];
+    CGPoint velocity   = [recognizer velocityInView:self];
     // right half screen move to control volume, the left control brightness
     BOOL volumeControl = (location.x > self.width / 2.f);
 
@@ -356,7 +356,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
                 // show overlay
                 [self.overlay show];
                 _panDirection = JMPlayerPanDirectionHorizontal;
-                _currentTime = CMTimeGetSeconds(_player.currentTime);
+                _currentTime  = CMTimeGetSeconds(_player.currentTime);
                 [self _pause];
             } else {// vertical move to control volume or brightness
                 _panDirection = JMPlayerPanDirectionVertical;
@@ -366,7 +366,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
         case UIGestureRecognizerStateChanged:
         {
             if (JMPlayerPanDirectionHorizontal == _panDirection) {
-                _currentTime += velocity.x / 200.f;
+                _currentTime    += velocity.x / 200.f;
                 self.currentTime = _currentTime;
             } else {
                 volumeControl ? (_volumeSlider.value -= velocity.y / 10000) : ([UIScreen mainScreen].brightness -= velocity.y / 10000);

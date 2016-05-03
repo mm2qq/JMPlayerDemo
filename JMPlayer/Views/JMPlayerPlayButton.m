@@ -12,11 +12,11 @@
 @implementation JMPlayerPlayButton
 
 - (void)drawRect:(CGRect)rect {
-    CGFloat width = MIN(rect.size.width, rect.size.height);
+    CGFloat width    = MIN(rect.size.width, rect.size.height);
     CGContextRef ctx = UIGraphicsGetCurrentContext();
 
     if (self.isPlaying) {
-        CGRect leftRect = (CGRect){0.f, 0.f, 13.f, width};
+        CGRect leftRect  = (CGRect){0.f, 0.f, 13.f, width};
         CGRect rightRect = (CGRect){width - 13.f, 0.f, 13.f, width};
         CGRect rects[2];
         rects[0] = leftRect;

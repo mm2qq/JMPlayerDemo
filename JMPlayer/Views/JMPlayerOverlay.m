@@ -17,14 +17,14 @@
 #import "UIView+JMAdd.h"
 #import "JMPlayerMacro.h"
 
-static const CGFloat OverlaySliderHeigt = 36.f;
-static const CGFloat OverlayPlayButtonWidth = 40.f;
-static const CGFloat OverlayControlMargin = 4.f;
-static const CGFloat OverlayAnimateDuration = .25f;
+static const CGFloat OverlaySliderHeigt      = 36.f;
+static const CGFloat OverlayPlayButtonWidth  = 40.f;
+static const CGFloat OverlayControlMargin    = 4.f;
+static const CGFloat OverlayAnimateDuration  = .25f;
 static const CGFloat OverlayAutoHideInterval = 5.f;
 
 static inline NSString * _formatTimeSeconds(CGFloat time) {
-    NSInteger hours = (NSInteger)floor(time / 3600);
+    NSInteger hours   = (NSInteger)floor(time / 3600);
     NSInteger minutes = (NSInteger)floor(time / 60) % 60;
     NSInteger seconds = (NSInteger)time % 60;
 
@@ -37,11 +37,11 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
     __weak NSTimer *_autoHideTimer;                         ///< Overlay auto hide timer
 }
 
-@property (nonatomic) UILabel *timeLabel;                   ///< Played time label
-@property (nonatomic) UILabel *durationLabel;               ///< Total time label
-@property (nonatomic) UISlider *slider;                     ///< Played time progress slider
-@property (nonatomic) UIProgressView *progressView;         ///< Loaded time progress view
-@property (nonatomic) JMPlayerPlayButton *playButton;       ///< Play & pause button
+@property (nonatomic) UILabel              *timeLabel;      ///< Played time label
+@property (nonatomic) UILabel              *durationLabel;  ///< Total time label
+@property (nonatomic) UISlider             *slider;         ///< Played time progress slider
+@property (nonatomic) UIProgressView       *progressView;   ///< Loaded time progress view
+@property (nonatomic) JMPlayerPlayButton   *playButton;     ///< Play & pause button
 @property (nonatomic) JMPlayerRotateButton *rotateButton;   ///< Manually rotate screen button
 
 @end
@@ -81,10 +81,10 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 
 - (void)show {
     if (self.isHidden) {
-        UIViewAnimationOptions options = UIViewAnimationOptionCurveLinear |
-        UIViewAnimationOptionAllowAnimatedContent |
-        UIViewAnimationOptionShowHideTransitionViews |
-        UIViewAnimationOptionTransitionFlipFromBottom;
+        UIViewAnimationOptions options = UIViewAnimationOptionCurveLinear
+        | UIViewAnimationOptionAllowAnimatedContent
+        | UIViewAnimationOptionShowHideTransitionViews
+        | UIViewAnimationOptionTransitionFlipFromBottom;
 
         [UIView animateWithDuration:OverlayAnimateDuration
                               delay:0
