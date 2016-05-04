@@ -20,13 +20,13 @@ A simple video player demo based on AVFoundation
 
 ### Samples
 
-![](https://github.com/maocl023/JMPlayerDemo/blob/master/Samples/portrait.png)
+![](https://github.com/maocl023/JMPlayerDemo/blob/master/Samples/p.png)
 
-![](https://github.com/maocl023/JMPlayerDemo/blob/master/Samples/landscape1.png)
+![](https://github.com/maocl023/JMPlayerDemo/blob/master/Samples/l1.png)
 
-![](https://github.com/maocl023/JMPlayerDemo/blob/master/Samples/landscape2.png)
+![](https://github.com/maocl023/JMPlayerDemo/blob/master/Samples/l2.png)
 
-![](https://github.com/maocl023/JMPlayerDemo/blob/master/Samples/landscape3.png)
+![](https://github.com/maocl023/JMPlayerDemo/blob/master/Samples/l3.png)
 
 ### Usage
 
