@@ -49,7 +49,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
     [self _setupPlayer];
 }
 
-- (instancetype)initWithItems:(NSArray<id<JMPlayerItemInfoDelegate>> *)items {
+- (instancetype)initWithItems:(NSArray<id<JMPlayerItemDelegate>> *)items {
     if (self = [super init]) {
         _items = items.copy;
         [self _setupPlayer];
@@ -117,7 +117,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
 
 #pragma mark - Getters & Setters
 
-- (void)setItems:(NSArray<id<JMPlayerItemInfoDelegate>> *)items {
+- (void)setItems:(NSArray<id<JMPlayerItemDelegate>> *)items {
     _items = items.copy;
     [self _setupPlayer];
 }
@@ -195,7 +195,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
 
     _playerItems = [NSMutableArray arrayWithCapacity:_items.count];
 
-    for (id<JMPlayerItemInfoDelegate> item in _items) {
+    for (id<JMPlayerItemDelegate> item in _items) {
         NSString *urlString = [item playUrl];
         [_playerItems addObject:[AVPlayerItem playerItemWithURL:[NSURL URLWithString:urlString]]];
     }

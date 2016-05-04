@@ -30,7 +30,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerStatus) {
 
 @end
 
-@protocol JMPlayerItemInfoDelegate <NSObject>
+@protocol JMPlayerItemDelegate <NSObject>
 
 @property (nullable, nonatomic, copy) NSString *itemTitle;
 @property (nullable, nonatomic, copy) NSString *itemDescription;
@@ -45,7 +45,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerStatus) {
 /**
  *  Player's source, reset will reset the player too
  */
-@property (nonatomic, copy) NSArray<id<JMPlayerItemInfoDelegate>> *items;
+@property (nonatomic, copy) NSArray<id<JMPlayerItemDelegate>> *items;
 
 /**
  *  Initialize a player view with video item
@@ -54,7 +54,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerStatus) {
  *
  *  @return Instance of player view
  */
-- (instancetype)initWithItems:(NSArray<id<JMPlayerItemInfoDelegate>> *)items;
+- (instancetype)initWithItems:(NSArray<id<JMPlayerItemDelegate>> *)items;
 
 @end
 
