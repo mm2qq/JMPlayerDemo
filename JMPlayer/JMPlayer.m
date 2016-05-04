@@ -216,7 +216,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
 - (void)_layoutSubviews {
     UIWindow *window = [UIApplication sharedApplication].keyWindow;
 
-    if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
+    if (OrientationIsLandscape) {
         if (self.superview != window) {
             // store previous superview
             _previousSuperview = self.superview;
@@ -336,7 +336,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
         NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[UIDevice instanceMethodSignatureForSelector:selector]];
         [invocation setSelector:selector];
         [invocation setTarget:[UIDevice currentDevice]];
-        UIDeviceOrientation orientation = UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation) ? UIDeviceOrientationPortrait : UIDeviceOrientationLandscapeLeft;
+        UIDeviceOrientation orientation = OrientationIsLandscape ? UIDeviceOrientationPortrait : UIDeviceOrientationLandscapeLeft;
         [invocation setArgument:&orientation atIndex:2];
         [invocation invoke];
     }

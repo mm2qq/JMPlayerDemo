@@ -27,8 +27,8 @@
     CGPathAddLineToPoint(midPath, NULL, end.x, end.y);
 
     // CTM tranform
-    CGContextRef   ctx = UIGraphicsGetCurrentContext();
-    CGPathRef topPath = CGPathCreateCopy(midPath);
+    CGContextRef     ctx = UIGraphicsGetCurrentContext();
+    CGPathRef    topPath = CGPathCreateCopy(midPath);
     CGContextAddPath(ctx, midPath);
     CGContextTranslateCTM(ctx, 0.f, -width / 6.f);
     CGContextAddPath(ctx, topPath);

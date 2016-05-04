@@ -28,6 +28,8 @@ A simple video player demo based on AVFoundation
 
 ![](https://github.com/maocl023/JMPlayerDemo/blob/master/Samples/l3.png)
 
+![](https://github.com/maocl023/JMPlayerDemo/blob/master/Samples/l4.png)
+
 ### Usage
 
 * Firstly, import `JMPlayer.h`

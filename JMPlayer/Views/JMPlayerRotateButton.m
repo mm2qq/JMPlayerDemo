@@ -23,7 +23,7 @@
     CGPathAddLineToPoint(path, NULL, end.x, end.y);
     CGPathMoveToPoint(path, NULL, start.x, end.y);
 
-    if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
+    if (OrientationIsLandscape) {
         CGPathAddLineToPoint(path, NULL, end.x, end.y);
         CGPathAddLineToPoint(path, NULL, end.x, start.y);
     } else {

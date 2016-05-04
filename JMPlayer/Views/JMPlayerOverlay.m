@@ -13,6 +13,7 @@
 #import "JMPlayerPlayButton.h"
 #import "JMPlayerNextButton.h"
 #import "JMPlayerRotateButton.h"
+#import "JMPlayerPlaylistCell.h"
 #import "NSTimer+JMAdd.h"
 #import "UIControl+JMAdd.h"
 #import "UIGestureRecognizer+JMAdd.h"
@@ -34,7 +35,7 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
     return hours > 0 ? [NSString stringWithFormat:@"%02ld:%02ld:%02ld", (long)hours, (long)minutes, (long)seconds] : [NSString stringWithFormat:@"%02ld:%02ld", (long)minutes, (long)seconds];
 }
 
-@interface JMPlayerOverlay () <JMPlayerPlaybackDelegate, UIGestureRecognizerDelegate>
+@interface JMPlayerOverlay () <JMPlayerPlaybackDelegate, UIGestureRecognizerDelegate, UITableViewDataSource, UITableViewDelegate>
 {
 @private
     NSUInteger     _itemIndex;         ///< Video item's index
@@ -46,6 +47,7 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 @property (nonatomic) UILabel              *durationLabel;  ///< Total time label
 @property (nonatomic) UISlider             *slider;         ///< Played time progress slider
 @property (nonatomic) UIProgressView       *progressView;   ///< Loaded time progress view
+@property (nonatomic) UITableView          *playlist;       ///< Playlist table
 @property (nonatomic) JMPlayerCloseButton  *closeButton;    ///< Close button
 @property (nonatomic) JMPlayerListButton   *listButton;     ///< List button
 @property (nonatomic) JMPlayerPlayButton   *playButton;     ///< Play & pause button
@@ -124,6 +126,12 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
          {
              if (finished) {
                  self.hidden = YES;
+
+                 // if exist play list, remove it
+                 if (_playlist) {
+                     [_playlist removeFromSuperview];
+                     _playlist = nil;
+                 }
              }
          }];
     }
@@ -161,6 +169,7 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
         || CGRectContainsPoint(_titleLabel.frame, point)
         || CGRectContainsPoint(_closeButton.frame, point)
         || CGRectContainsPoint(_listButton.frame, point)
+        || CGRectContainsPoint(_playlist.frame, point)
         || CGRectContainsPoint(_playButton.frame, point)
         || CGRectContainsPoint(_nextButton.frame, point)
         || CGRectContainsPoint(_rotateButton.frame, point)) {
@@ -168,6 +177,26 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
     }
 
     return YES;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+#pragma mark - DataSource
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    JMPlayer *player = (JMPlayer *)self.superview;
+    return  player.items.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    JMPlayerPlaylistCell *cell = [tableView dequeueReusableCellWithIdentifier:[JMPlayerPlaylistCell cellId]];
+    cell.backgroundColor       = [UIColor clearColor];
+    cell.itemTitle             = [((JMPlayer *)self.superview).items[indexPath.row] itemTitle];
+    [cell setNeedsDisplay];
+
+    return cell;
 }
 
 #pragma mark - Getters & Setters
@@ -207,10 +236,26 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
     return _progressView;
 }
 
+- (UITableView *)playlist {
+    if (!_playlist) {
+        _playlist                 = [[UITableView alloc] initWithFrame:(CGRect){self.width, OverlayBannerHeigt, self.width / 2.5f, self.height - OverlayBannerHeigt * 2.f}];
+        _playlist.dataSource      = self;
+        _playlist.delegate        = self;
+        _playlist.rowHeight       = OverlayBannerHeigt;
+        _playlist.separatorStyle  = UITableViewCellSeparatorStyleNone;
+        _playlist.backgroundColor = OverlayBackgroundColor;
+
+        // register cell
+        [_playlist registerClass:JMPlayerPlaylistCell.class forCellReuseIdentifier:[JMPlayerPlaylistCell cellId]];
+    }
+
+    return _playlist;
+}
+
 - (UILabel *)titleLabel {
     if (!_titleLabel) {
         _titleLabel = [[UILabel alloc] initWithFrame:(CGRect){CGPointZero, 1.f, OverlayBannerHeigt}];
-        _titleLabel.font            = [UIFont boldSystemFontOfSize:16.f];
+        _titleLabel.font            = [UIFont boldSystemFontOfSize:PlayerNormalFontSize];
         _titleLabel.textColor       = OverlayForegroundColor;
         _titleLabel.backgroundColor = OverlayBackgroundColor;
     }
@@ -221,7 +266,7 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 - (UILabel *)timeLabel {
     if (!_timeLabel) {
         _timeLabel           = [[UILabel alloc] initWithFrame:(CGRect){CGPointZero, 61.f, 17.f}];
-        _timeLabel.font      = [UIFont systemFontOfSize:14.f];
+        _timeLabel.font      = [UIFont systemFontOfSize:PlayerSmallFontSize];
         _timeLabel.textColor = OverlayForegroundColor;
         _timeLabel.text      = @"00:00";
     }
@@ -232,7 +277,7 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 - (UILabel *)durationLabel {
     if (!_durationLabel) {
         _durationLabel               = [[UILabel alloc] initWithFrame:(CGRect){CGPointZero, 61.f, 17.f}];
-        _durationLabel.font          = [UIFont systemFontOfSize:14.f];
+        _durationLabel.font          = [UIFont systemFontOfSize:PlayerSmallFontSize];
         _durationLabel.textColor     = OverlayForegroundColor;
         _durationLabel.textAlignment = NSTextAlignmentRight;
         _durationLabel.text          = @"00:00";
@@ -263,12 +308,12 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
         _listButton                 = [[JMPlayerListButton alloc] initWithFrame:(CGRect){CGPointZero, OverlayBannerHeigt, OverlayBannerHeigt}];
         _listButton.backgroundColor = OverlayBackgroundColor;
 
-        // @weakify(self)
+        @weakify(self)
         [_listButton setBlockForControlEvents:UIControlEventTouchUpInside
                                         block:^(JMPlayerCloseButton *button)
          {
-             // @strongify(self)
-             NSLog(@"List button tapped.");
+             @strongify(self)
+             [self _togglePlaylist];
          }];
     }
 
@@ -352,7 +397,8 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
     _listButton.top       = self.top;
     _listButton.right     = self.right;
 
-    _titleLabel.width     = self.width - _closeButton.width - _listButton.width;
+    _titleLabel.width     = self.width - _closeButton.width
+                            - (OrientationIsPortrait ? 0.f : _listButton.width);
     _titleLabel.top       = self.top;
     _titleLabel.left      = _closeButton.right;
 
@@ -379,8 +425,14 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 
     _playButton.center    = self.center;
 
-    // update orientation status
+    // update by orientation status
     [_rotateButton setNeedsDisplay];
+    _listButton.hidden    = OrientationIsPortrait;
+
+    if (OrientationIsPortrait && _playlist) {
+        [_playlist removeFromSuperview];
+        _playlist = nil;
+    }
 }
 
 - (void)_addGesture {
@@ -411,6 +463,26 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
                                                            [self hide];
                                                        }
                                                      repeats:NO];
+}
+
+- (void)_togglePlaylist {
+    if (!self.playlist.superview) {
+        [self addSubview:_playlist];
+    }
+
+    // auto hide timer control
+    BOOL isHidden = (_playlist.left == self.right);
+    isHidden ? [_autoHideTimer invalidate] : [self _autoHide];
+
+    [UIView animateWithDuration:OverlayAnimateDuration
+                     animations:^
+    {
+        if (isHidden) {
+            _playlist.right = self.right;
+        } else {
+            _playlist.left  = self.right;
+        }
+    }];
 }
 
 - (void)_resetPlayer:(JMPlayer *)player {
