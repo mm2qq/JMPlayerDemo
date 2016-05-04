@@ -14,8 +14,8 @@
 - (void)drawRect:(CGRect)rect {
     CGFloat     width = MIN(rect.size.width, rect.size.height);
     CGFloat lineWidth = 2.f;
-    CGPoint     start = CGPointMake(12.f, 12.f);
-    CGPoint       end = CGPointMake(width - 12.f, width - 12.f);
+    CGPoint     start = CGPointMake(width / 3.f, width / 3.f);
+    CGPoint       end = CGPointMake(width - start.x, width - start.y);
     CGContextRef  ctx = UIGraphicsGetCurrentContext();
     CGContextSetShouldAntialias(ctx, true);
 

@@ -13,7 +13,7 @@
 
 - (void)drawRect:(CGRect)rect {
     CGFloat     width = MIN(rect.size.width, rect.size.height);
-    CGFloat rectWidth = 13.f;
+    CGFloat rectWidth = width / 3.f;
     CGPoint     start = CGPointMake(0.f, 0.f);
     CGContextRef  ctx = UIGraphicsGetCurrentContext();
 
