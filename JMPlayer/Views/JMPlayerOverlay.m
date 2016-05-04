@@ -180,7 +180,8 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    _itemIndex   = indexPath.row;
+    [tableView reloadData];
 }
 
 #pragma mark - DataSource
@@ -191,10 +192,9 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    JMPlayerPlaylistCell *cell = [tableView dequeueReusableCellWithIdentifier:[JMPlayerPlaylistCell cellId]];
-    cell.backgroundColor       = [UIColor clearColor];
+    JMPlayerPlaylistCell *cell = [tableView dequeueReusableCellWithIdentifier:[JMPlayerPlaylistCell cellId] forIndexPath:indexPath];
     cell.itemTitle             = [((JMPlayer *)self.superview).items[indexPath.row] itemTitle];
-    [cell setNeedsDisplay];
+    cell.choosed               = (_itemIndex == indexPath.row);
 
     return cell;
 }
@@ -476,13 +476,13 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 
     [UIView animateWithDuration:OverlayAnimateDuration
                      animations:^
-    {
-        if (isHidden) {
-            _playlist.right = self.right;
-        } else {
-            _playlist.left  = self.right;
-        }
-    }];
+     {
+         if (isHidden) {
+             _playlist.right = self.right;
+         } else {
+             _playlist.left  = self.right;
+         }
+     }];
 }
 
 - (void)_resetPlayer:(JMPlayer *)player {

@@ -12,7 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface JMPlayerPlaylistCell : UITableViewCell
 
-@property (nullable, nonatomic, copy) NSString *itemTitle;
+@property (nonatomic, assign, getter=isChoosed) BOOL choosed;
+@property (nullable, nonatomic, copy) NSString       *itemTitle;
 
 + (NSString *)cellId;
 

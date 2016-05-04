@@ -12,40 +12,45 @@
 
 @implementation JMPlayerPlaylistCell
 
-+ (NSString *)cellId {
-    return NSStringFromClass(self.class);
+#pragma mark - Lifecycle
+
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
+        self.backgroundColor = [UIColor clearColor];
+        self.selectionStyle  = UITableViewCellSelectionStyleNone;
+    }
+
+    return self;
 }
 
 - (void)drawRect:(CGRect)rect {
     if (_itemTitle) {
-        UIFont *font   = [UIFont systemFontOfSize:PlayerSmallFontSize];
-        CGSize  size   = [_itemTitle sizeForFont:font size:rect.size mode:NSLineBreakByTruncatingTail];
-        CGFloat indent = 5.f;
+        UIFont *font    = self.isChoosed ? [UIFont boldSystemFontOfSize:PlayerSmallFontSize]
+        : [UIFont systemFontOfSize:PlayerSmallFontSize];
+        UIColor * color = self.isChoosed ? OverlayProgressColor : OverlayForegroundColor;
+        CGSize  size    = [_itemTitle sizeForFont:font size:rect.size mode:NSLineBreakByTruncatingTail];
+        CGFloat indent  = 5.f;
 
         NSMutableParagraphStyle *paraStyle = [NSMutableParagraphStyle new];
         paraStyle.lineBreakMode            = NSLineBreakByTruncatingTail;
         paraStyle.firstLineHeadIndent      = indent;
 
-        [_itemTitle drawInRect:(CGRect){0.f, size.height / 2.f, rect.size.width - rect.size.height / 2.f - indent, size.height}
-                withAttributes:@{NSFontAttributeName : font, NSForegroundColorAttributeName : OverlayForegroundColor, NSParagraphStyleAttributeName : paraStyle}];
+        [_itemTitle drawInRect:(CGRect){0.f, size.height / 2.f, rect.size.width, size.height}
+                withAttributes:@{NSFontAttributeName : font, NSForegroundColorAttributeName : color, NSParagraphStyleAttributeName : paraStyle}];
     }
+}
 
-    // draw a cross
-    CGFloat     width = MIN(rect.size.width, rect.size.height);
-    CGFloat lineWidth = 2.f;
-    CGPoint     start = CGPointMake(rect.size.width - rect.size.height + width / 3.f, rect.origin.y + width / 3.f);
-    CGPoint       end = CGPointMake(rect.size.width - width / 3.f, rect.size.height - width / 3.f);
-    CGContextRef  ctx = UIGraphicsGetCurrentContext();
-    CGContextSetShouldAntialias(ctx, true);
+#pragma mark - Setters
 
-    CGContextMoveToPoint(ctx, start.x, start.y);
-    CGContextAddLineToPoint(ctx, end.x, end.y);
-    CGContextMoveToPoint(ctx, start.x, end.y);
-    CGContextAddLineToPoint(ctx, end.x, start.y);
-    CGContextSetStrokeColorWithColor(ctx, OverlayForegroundColor.CGColor);
-    CGContextSetLineWidth(ctx, lineWidth);
-    CGContextSetLineCap(ctx, kCGLineCapRound);
-    CGContextStrokePath(ctx);
+- (void)setChoosed:(BOOL)choosed {
+    _choosed = choosed;
+    [self setNeedsDisplay];
+}
+
+#pragma mark - Public
+
++ (NSString *)cellId {
+    return NSStringFromClass(self.class);
 }
 
 @end
