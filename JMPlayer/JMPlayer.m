@@ -111,7 +111,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
         return YES;
     }
 
-    // if overlay is hidden, gesture can make a different
+    // if overlay is hidden, tap gesture can make a different
     return _overlay.isHidden;
 }
 
@@ -171,8 +171,12 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
             @strongify(self)
             isPlaying ? [self _pause] : [self _play];
         };
-        _overlay.nextButtonDidTapped = ^{
+        _overlay.nextButtonDidTapped = ^(NSUInteger itemIndex) {
             @strongify(self)
+            if ([self.delegate respondsToSelector:@selector(player:itemDidChangedAtIndex:)]) {
+                [self.delegate player:self itemDidChangedAtIndex:++itemIndex];
+            }
+
             [self.player advanceToNextItem];
         };
         _overlay.rotateButtonDidTapped = ^{
@@ -181,6 +185,10 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
         };
         _overlay.listItemDidSelected = ^(NSUInteger itemIndex) {
             @strongify(self)
+            if ([self.delegate respondsToSelector:@selector(player:itemDidChangedAtIndex:)]) {
+                [self.delegate player:self itemDidChangedAtIndex:itemIndex];
+            }
+
             NSString *urlString = [self.items[itemIndex] playUrl];
             AVPlayerItem *item  = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:urlString]];
             [self.player replaceCurrentItemWithPlayerItem:item];

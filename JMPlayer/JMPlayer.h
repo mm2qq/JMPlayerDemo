@@ -28,6 +28,8 @@ typedef NS_ENUM(NSUInteger, JMPlayerStatus) {
 
 - (void)player:(JMPlayer *)player itemDuration:(CGFloat)duration loadedTime:(CGFloat)time;
 
+- (void)player:(JMPlayer *)player itemDidChangedAtIndex:(NSUInteger)index;
+
 @end
 
 @protocol JMPlayerItemDelegate <NSObject>

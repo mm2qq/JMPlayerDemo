@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) void (^playButtonDidTapped)(BOOL isPlaying);
 
-@property (nonatomic, copy) void (^nextButtonDidTapped)();
+@property (nonatomic, copy) void (^nextButtonDidTapped)(NSUInteger itemIndex);
 
 @property (nonatomic, copy) void (^rotateButtonDidTapped)();
 

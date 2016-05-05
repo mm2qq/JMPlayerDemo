@@ -141,12 +141,6 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 
 - (void)player:(JMPlayer *)player currentStatus:(JMPlayerStatus)status {
     _playButton.playing = (JMPlayerStatusPlaying == status);
-
-    // reset overlay while one item or all items finished
-    if (JMPlayerStatusBuffering == status
-        && self.slider.value >= self.slider.maximumValue) {
-        [self _resetPlayer:player];
-    }
 }
 
 - (void)player:(JMPlayer *)player currentTime:(CGFloat)time {
@@ -160,6 +154,10 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
     self.titleLabel.text       = [player.items[_itemIndex] itemTitle];
     self.durationLabel.text    = _formatTimeSeconds(duration);
     self.progressView.progress = time;
+}
+
+- (void)player:(JMPlayer *)player itemDidChangedAtIndex:(NSUInteger)index {
+    [self _resetPlayer:player atIndex:index];
 }
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
@@ -355,8 +353,7 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
                                         block:^(JMPlayerNextButton *button)
          {
              @strongify(self)
-             [self _resetPlayer:(JMPlayer *)self.superview];
-             !self.nextButtonDidTapped ? : self.nextButtonDidTapped();
+             !self.nextButtonDidTapped ? : self.nextButtonDidTapped(self->_itemIndex);
          }];
     }
 
@@ -490,8 +487,15 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
      }];
 }
 
-- (void)_resetPlayer:(JMPlayer *)player {
-    if (++_itemIndex == player.items.count) _itemIndex = 0;
+- (void)_resetPlayer:(JMPlayer *)player atIndex:(NSUInteger)index {
+    _itemIndex = (index == player.items.count ? 0 : index);
+
+    // try to update play list asynchronously
+    if (_playlist) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [_playlist reloadData];
+        });
+    }
 
     self.titleLabel.text       = @"";
     self.slider.enabled        = NO;
