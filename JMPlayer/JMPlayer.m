@@ -76,8 +76,8 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
         return;
     }
 
-    if ([keyPath isEqualToString:@"player.currentItem.status"]) {
-        self.playerStatus = _player.rate == 0.f ? JMPlayerStatusPaused : JMPlayerStatusPlaying;
+    if ([keyPath isEqualToString:@"player.rate"]) {
+        self.playerStatus = (_player.rate == 0.f ? JMPlayerStatusPaused : JMPlayerStatusPlaying);
     } else if ([keyPath isEqualToString:@"player.currentItem.loadedTimeRanges"]) {
         CMTime         totalDuration = _player.currentItem.duration;
         BOOL           validDuration = CMTIME_IS_NUMERIC(totalDuration) && totalDuration.value != 0;
@@ -91,7 +91,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
         CGFloat     duration = CMTimeGetSeconds(timeRage.duration);
         CGFloat     progress = (start + duration) / totalDurationSeconds;
 
-        // if buffered duration is more than 5 seconds and not in pasued, go on playing
+        // if buffered progress is more than 5 seconds and not in pasued, go on playing
         if (duration > 5.0 && JMPlayerStatusPaused != _playerStatus) {
             [self _play];
         }
@@ -139,14 +139,14 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
 
 - (void)setPlayerStatus:(JMPlayerStatus)playerStatus {
     // update status only in status really changed
-    if (playerStatus != _playerStatus) {
-        _playerStatus = playerStatus;
-        JMPlayerStatusBuffering == _playerStatus ?
-        [self.indicator startAnimating] : [self.indicator stopAnimating];
+    if (_playerStatus == playerStatus) return;
 
-        if ([_delegate respondsToSelector:@selector(player:currentStatus:)]) {
-            [_delegate player:self currentStatus:_playerStatus];
-        }
+    _playerStatus = playerStatus;
+    JMPlayerStatusBuffering == _playerStatus ?
+    [self.indicator startAnimating] : [self.indicator stopAnimating];
+
+    if ([_delegate respondsToSelector:@selector(player:currentStatus:)]) {
+        [_delegate player:self currentStatus:_playerStatus];
     }
 }
 
@@ -204,7 +204,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
         [_playerItems addObject:[AVPlayerItem playerItemWithURL:[NSURL URLWithString:urlString]]];
     }
 
-    _player      = [AVQueuePlayer queuePlayerWithItems:_playerItems];
+    _player      = [AVPlayer playerWithPlayerItem:_playerItems[0]];
     _playerLayer = [AVPlayerLayer playerLayerWithPlayer:_player];
 
     self.backgroundColor = [UIColor blackColor];
@@ -248,7 +248,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
 
 - (void)_addPlayerObserver {
     [self addObserver:self
-           forKeyPath:@"player.currentItem.status"
+           forKeyPath:@"player.rate"
               options:NSKeyValueObservingOptionNew
               context:&JMPlayerKVOContext];
     [self addObserver:self
@@ -276,7 +276,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
     }
 
     [self removeObserver:self
-              forKeyPath:@"player.currentItem.status"
+              forKeyPath:@"player.rate"
                  context:&JMPlayerKVOContext];
     [self removeObserver:self
               forKeyPath:@"player.currentItem.loadedTimeRanges"
@@ -335,16 +335,19 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
 }
 
 - (void)_playItemAtIndex:(NSUInteger)itemIndex {
-    if ([self.delegate respondsToSelector:@selector(player:itemDidChangedAtIndex:)]) {
-        [self.delegate player:self itemDidChangedAtIndex:itemIndex];
+    // pause player for better experience
+    [self _pause];
+
+    if ([_delegate respondsToSelector:@selector(player:itemDidChangedAtIndex:)]) {
+        [_delegate player:self itemDidChangedAtIndex:itemIndex];
     }
 
     // back to first item
-    itemIndex = (itemIndex == self.items.count ? 0 : itemIndex);
+    itemIndex = (itemIndex == _items.count ? 0 : itemIndex);
 
-    NSString *urlString = [self.items[itemIndex] playUrl];
+    NSString *urlString = [_items[itemIndex] playUrl];
     AVPlayerItem *item  = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:urlString]];
-    [self.player replaceCurrentItemWithPlayerItem:item];
+    [_player replaceCurrentItemWithPlayerItem:item];
 }
 
 - (void)_toggleScreenOrientation {
@@ -370,7 +373,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
         {
             if (fabs(velocity.x) > fabs(velocity.y)) {// horizontal move to control playback
                 // show overlay
-                [self.overlay show];
+                [_overlay show];
                 _panDirection = JMPlayerPanDirectionHorizontal;
                 _currentTime  = CMTimeGetSeconds(_player.currentTime);
                 [self _pause];
@@ -390,7 +393,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
         }
             break;
         case UIGestureRecognizerStateEnded:
-            [self.overlay hide];
+            [_overlay hide];
             break;
         default:
             break;

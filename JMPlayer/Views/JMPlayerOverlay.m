@@ -144,16 +144,16 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 }
 
 - (void)player:(JMPlayer *)player currentTime:(CGFloat)time {
-    self.slider.value   = time;
-    self.timeLabel.text = _formatTimeSeconds(time);
+    _slider.value   = time;
+    _timeLabel.text = _formatTimeSeconds(time);
 }
 
 - (void)player:(JMPlayer *)player itemDuration:(CGFloat)duration loadedTime:(CGFloat)time {
-    self.slider.enabled        = (duration != 0.f);
-    self.slider.maximumValue   = duration;
-    self.titleLabel.text       = [player.items[_itemIndex] itemTitle];
-    self.durationLabel.text    = _formatTimeSeconds(duration);
-    self.progressView.progress = time;
+    _slider.enabled        = (duration != 0.f);
+    _slider.maximumValue   = duration;
+    _titleLabel.text       = [player.items[_itemIndex] itemTitle];
+    _durationLabel.text    = _formatTimeSeconds(duration);
+    _progressView.progress = time;
 }
 
 - (void)player:(JMPlayer *)player itemDidChangedAtIndex:(NSUInteger)index {
@@ -400,7 +400,7 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
     _listButton.right     = self.right;
 
     _titleLabel.width     = self.width - _closeButton.width
-                            - (OrientationIsPortrait ? 0.f : _listButton.width);
+    - (OrientationIsPortrait ? 0.f : _listButton.width);
     _titleLabel.top       = self.top;
     _titleLabel.left      = _closeButton.right;
 
@@ -497,13 +497,13 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
         });
     }
 
-    self.titleLabel.text       = @"";
-    self.slider.enabled        = NO;
-    self.slider.value          = 0.f;
-    self.progressView.progress = 0.f;
-    self.timeLabel.text        = @"00:00";
-    self.durationLabel.text    = @"00:00";
-    self.playButton.playing    = NO;
+    _titleLabel.text       = @"";
+    _slider.enabled        = NO;
+    _slider.value          = 0.f;
+    _progressView.progress = 0.f;
+    _timeLabel.text        = @"00:00";
+    _durationLabel.text    = @"00:00";
+    _playButton.playing    = NO;
 }
 
 @end
