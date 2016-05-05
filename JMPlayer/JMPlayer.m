@@ -30,7 +30,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
 }
 
 @property (nonatomic, copy) NSMutableArray<AVPlayerItem *> *playerItems;    ///< Item to be player
-@property (nonatomic) AVQueuePlayer                        *player;         ///< Player instance
+@property (nonatomic) AVPlayer                             *player;         ///< Player instance
 @property (nonatomic) AVPlayerLayer                        *playerLayer;    ///< Player layer instance
 @property (nonatomic) UIActivityIndicatorView              *indicator;      ///< Player buffer status indicator
 @property (nonatomic) JMPlayerOverlay                      *overlay;        ///< Player control overlay
@@ -173,11 +173,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
         };
         _overlay.nextButtonDidTapped = ^(NSUInteger itemIndex) {
             @strongify(self)
-            if ([self.delegate respondsToSelector:@selector(player:itemDidChangedAtIndex:)]) {
-                [self.delegate player:self itemDidChangedAtIndex:++itemIndex];
-            }
-
-            [self.player advanceToNextItem];
+            [self _playItemAtIndex:++itemIndex];
         };
         _overlay.rotateButtonDidTapped = ^{
             @strongify(self)
@@ -185,13 +181,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
         };
         _overlay.listItemDidSelected = ^(NSUInteger itemIndex) {
             @strongify(self)
-            if ([self.delegate respondsToSelector:@selector(player:itemDidChangedAtIndex:)]) {
-                [self.delegate player:self itemDidChangedAtIndex:itemIndex];
-            }
-
-            NSString *urlString = [self.items[itemIndex] playUrl];
-            AVPlayerItem *item  = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:urlString]];
-            [self.player replaceCurrentItemWithPlayerItem:item];
+            [self _playItemAtIndex:itemIndex];
         };
 
         self.delegate = (id<JMPlayerPlaybackDelegate>)_overlay;
@@ -342,6 +332,19 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
         [_player pause];
         self.playerStatus = JMPlayerStatusPaused;
     }
+}
+
+- (void)_playItemAtIndex:(NSUInteger)itemIndex {
+    if ([self.delegate respondsToSelector:@selector(player:itemDidChangedAtIndex:)]) {
+        [self.delegate player:self itemDidChangedAtIndex:itemIndex];
+    }
+
+    // back to first item
+    itemIndex = (itemIndex == self.items.count ? 0 : itemIndex);
+
+    NSString *urlString = [self.items[itemIndex] playUrl];
+    AVPlayerItem *item  = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:urlString]];
+    [self.player replaceCurrentItemWithPlayerItem:item];
 }
 
 - (void)_toggleScreenOrientation {
