@@ -68,7 +68,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
     [super layoutSubviews];
 }
 
-#pragma mark - KVO
+#pragma mark - Observers
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
     if (&JMPlayerKVOContext != context) {
@@ -101,6 +101,12 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
         }
     } else if ([keyPath isEqualToString:@"player.currentItem.playbackBufferEmpty"]) {
         self.playerStatus = JMPlayerStatusBuffering;
+    }
+}
+
+- (void)handleItemDidPlayToEnd:(NSNotification *)notification {
+    if (self.isContinuous) {
+        self.playerStatus = JMPlayerStatusIdle;
     }
 }
 
@@ -204,6 +210,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
         [_playerItems addObject:[AVPlayerItem playerItemWithURL:[NSURL URLWithString:urlString]]];
     }
 
+    _continuous  = YES;
     _player      = [AVPlayer playerWithPlayerItem:_playerItems[0]];
     _playerLayer = [AVPlayerLayer playerLayerWithPlayer:_player];
 
@@ -247,6 +254,10 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
 }
 
 - (void)_addPlayerObserver {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleItemDidPlayToEnd:)
+                                                 name:AVPlayerItemDidPlayToEndTimeNotification
+                                               object:nil];
     [self addObserver:self
            forKeyPath:@"player.rate"
               options:NSKeyValueObservingOptionNew
@@ -275,6 +286,9 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
         [_player removeTimeObserver:_timeObserverToken];
     }
 
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:AVPlayerItemDidPlayToEndTimeNotification
+                                                  object:nil];
     [self removeObserver:self
               forKeyPath:@"player.rate"
                  context:&JMPlayerKVOContext];

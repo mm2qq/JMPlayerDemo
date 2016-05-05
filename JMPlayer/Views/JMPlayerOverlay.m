@@ -141,6 +141,10 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 
 - (void)player:(JMPlayer *)player currentStatus:(JMPlayerStatus)status {
     _playButton.playing = (JMPlayerStatusPlaying == status);
+
+    if (JMPlayerStatusIdle == status && player.isContinuous) {
+        !_nextButtonDidTapped ? : _nextButtonDidTapped(_itemIndex);
+    }
 }
 
 - (void)player:(JMPlayer *)player currentTime:(CGFloat)time {
@@ -157,7 +161,7 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 }
 
 - (void)player:(JMPlayer *)player itemDidChangedAtIndex:(NSUInteger)index {
-    [self _resetPlayer:player atIndex:index];
+    [self _resetWithPlayer:player atIndex:index];
 }
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
@@ -198,6 +202,12 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
     JMPlayerPlaylistCell *cell = [tableView dequeueReusableCellWithIdentifier:[JMPlayerPlaylistCell cellId] forIndexPath:indexPath];
     cell.itemTitle             = [((JMPlayer *)self.superview).items[indexPath.row] itemTitle];
     cell.chosen                = (_itemIndex == indexPath.row);
+
+    if (cell.isChosen) {
+        [tableView scrollToRowAtIndexPath:indexPath
+                         atScrollPosition:UITableViewScrollPositionMiddle
+                                 animated:YES];
+    }
 
     return cell;
 }
@@ -484,26 +494,26 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
          } else {
              _playlist.left  = self.right;
          }
+     }
+                     completion:^(BOOL finished)
+     {
+         if (finished && _playlist.left != self.right) {
+             [_playlist scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:_itemIndex inSection:0]
+                              atScrollPosition:UITableViewScrollPositionMiddle
+                                      animated:YES];
+         }
      }];
 }
 
-- (void)_resetPlayer:(JMPlayer *)player atIndex:(NSUInteger)index {
+- (void)_resetWithPlayer:(JMPlayer *)player atIndex:(NSUInteger)index {
     _itemIndex = (index == player.items.count ? 0 : index);
-
+    
     // try to update play list asynchronously
     if (_playlist) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [_playlist reloadData];
         });
     }
-
-    _titleLabel.text       = @"";
-    _slider.enabled        = NO;
-    _slider.value          = 0.f;
-    _progressView.progress = 0.f;
-    _timeLabel.text        = @"00:00";
-    _durationLabel.text    = @"00:00";
-    _playButton.playing    = NO;
 }
 
 @end

@@ -16,6 +16,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerStatus) {
     JMPlayerStatusPaused,               ///< Indicates that the player is paused
     JMPlayerStatusPlaying,              ///< Indicates that the player is playing now
     JMPlayerStatusBuffering,            ///< Indicates that the player is buffering
+    JMPlayerStatusIdle,                 ///< Indicates that the player finish to play item
 };
 
 @protocol JMPlayerPlaybackDelegate <NSObject>
@@ -42,7 +43,10 @@ typedef NS_ENUM(NSUInteger, JMPlayerStatus) {
 
 @interface JMPlayer : UIView
 
-@property (nonatomic, weak) id<JMPlayerPlaybackDelegate> delegate;
+/**
+ *  Indicates whether player should continuous play next item
+ */
+@property (nonatomic, getter=isContinuous) BOOL continuous;
 
 /**
  *  Player's source, reset will reset the player too
@@ -57,6 +61,11 @@ typedef NS_ENUM(NSUInteger, JMPlayerStatus) {
  *  @return Instance of player view
  */
 - (instancetype)initWithItems:(NSArray<id<JMPlayerItemDelegate>> *)items;
+
+/**
+ *  Communicate with JMPlayerOverlay instance, do not sign a variable to it
+ */
+@property (nonatomic, weak) id<JMPlayerPlaybackDelegate> delegate;
 
 @end
 
