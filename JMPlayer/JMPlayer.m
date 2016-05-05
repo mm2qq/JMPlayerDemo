@@ -179,6 +179,12 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
             @strongify(self)
             [self _toggleScreenOrientation];
         };
+        _overlay.listItemDidSelected = ^(NSUInteger itemIndex) {
+            @strongify(self)
+            NSString *urlString = [self.items[itemIndex] playUrl];
+            AVPlayerItem *item  = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:urlString]];
+            [self.player replaceCurrentItemWithPlayerItem:item];
+        };
 
         self.delegate = (id<JMPlayerPlaybackDelegate>)_overlay;
     }

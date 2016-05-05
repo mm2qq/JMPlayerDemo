@@ -20,6 +20,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) void (^rotateButtonDidTapped)();
 
+@property (nonatomic, copy) void (^listItemDidSelected)(NSUInteger itemIndex);
+
 /**
  *  Overlay show with animate manually
  */

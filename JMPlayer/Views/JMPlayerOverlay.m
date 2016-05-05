@@ -180,8 +180,13 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    _itemIndex   = indexPath.row;
-    [tableView reloadData];
+    if (_itemIndex != indexPath.row) {
+        _itemIndex  = indexPath.row;
+        [tableView reloadData];
+
+        // invoke callback
+        !_listItemDidSelected ? : _listItemDidSelected(_itemIndex);
+    }
 }
 
 #pragma mark - DataSource
@@ -194,7 +199,7 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     JMPlayerPlaylistCell *cell = [tableView dequeueReusableCellWithIdentifier:[JMPlayerPlaylistCell cellId] forIndexPath:indexPath];
     cell.itemTitle             = [((JMPlayer *)self.superview).items[indexPath.row] itemTitle];
-    cell.choosed               = (_itemIndex == indexPath.row);
+    cell.chosen                = (_itemIndex == indexPath.row);
 
     return cell;
 }

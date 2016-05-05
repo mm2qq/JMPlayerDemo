@@ -25,9 +25,9 @@
 
 - (void)drawRect:(CGRect)rect {
     if (_itemTitle) {
-        UIFont *font    = self.isChoosed ? [UIFont boldSystemFontOfSize:PlayerSmallFontSize]
+        UIFont *font    = self.isChosen ? [UIFont boldSystemFontOfSize:PlayerSmallFontSize]
         : [UIFont systemFontOfSize:PlayerSmallFontSize];
-        UIColor * color = self.isChoosed ? OverlayProgressColor : OverlayForegroundColor;
+        UIColor * color = self.isChosen ? OverlayProgressColor : OverlayForegroundColor;
         CGSize  size    = [_itemTitle sizeForFont:font size:rect.size mode:NSLineBreakByTruncatingTail];
         CGFloat indent  = 5.f;
 
@@ -42,8 +42,8 @@
 
 #pragma mark - Setters
 
-- (void)setChoosed:(BOOL)choosed {
-    _choosed = choosed;
+- (void)setChosen:(BOOL)chosen {
+    _chosen = chosen;
     [self setNeedsDisplay];
 }
 
