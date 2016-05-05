@@ -12,7 +12,6 @@ A simple video player demo based on AVFoundation
 ### Coming Soon
 
 * Player skin configuration.
-* Play list feature.
 * Local storage for files and cache web resource.
 
 ### Support
