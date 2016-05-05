@@ -510,8 +510,8 @@ static inline NSString * _formatTimeSeconds(CGFloat time) {
     
     // try to update play list asynchronously
     if (_playlist) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [_playlist reloadData];
+        dispatch_async_on_main_queue(^{
+            [self.playlist reloadData];
         });
     }
 }

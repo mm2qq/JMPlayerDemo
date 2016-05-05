@@ -29,7 +29,6 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
     __weak UIView        *_previousSuperview;         ///< Player's previous superview
 }
 
-@property (nonatomic, copy) NSMutableArray<AVPlayerItem *> *playerItems;    ///< Item to be player
 @property (nonatomic) AVPlayer                             *player;         ///< Player instance
 @property (nonatomic) AVPlayerLayer                        *playerLayer;    ///< Player layer instance
 @property (nonatomic) UIActivityIndicatorView              *indicator;      ///< Player buffer status indicator
@@ -203,25 +202,23 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
         return;
     }
 
-    _playerItems = [NSMutableArray arrayWithCapacity:_items.count];
-
-    for (id<JMPlayerItemDelegate> item in _items) {
-        NSString *urlString = [item playUrl];
-        [_playerItems addObject:[AVPlayerItem playerItemWithURL:[NSURL URLWithString:urlString]]];
-    }
-
-    _continuous  = YES;
-    _player      = [AVPlayer playerWithPlayerItem:_playerItems[0]];
-    _playerLayer = [AVPlayerLayer playerLayerWithPlayer:_player];
-
+    _continuous          = YES;
     self.backgroundColor = [UIColor blackColor];
-    [self.layer addSublayer:_playerLayer];
-    [self addSubview:self.indicator];
-    [self addSubview:self.overlay];
 
-    [self _addPlayerObserver];
-    [self _addGesture];
-    [self _configVolumeSlider];
+    dispatch_async_on_global_queue(^{
+        _player      = [AVPlayer playerWithURL:[NSURL URLWithString:[_items[0] playUrl]]];
+        _playerLayer = [AVPlayerLayer playerLayerWithPlayer:_player];
+
+        dispatch_async_on_main_queue(^{
+            [self.layer addSublayer:_playerLayer];
+            [self addSubview:self.indicator];
+            [self addSubview:self.overlay];
+
+            [self _addPlayerObserver];
+            [self _addGesture];
+            [self _configVolumeSlider];
+        });
+    });
 }
 
 - (void)_layoutSubviews {
@@ -360,8 +357,15 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
     itemIndex = (itemIndex == _items.count ? 0 : itemIndex);
 
     NSString *urlString = [_items[itemIndex] playUrl];
-    AVPlayerItem *item  = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:urlString]];
-    [_player replaceCurrentItemWithPlayerItem:item];
+
+    // add this task to global concurrent queue
+    dispatch_async_on_global_queue(^{
+        AVPlayerItem *item  = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:urlString]];
+
+        dispatch_async_on_main_queue(^{
+            [_player replaceCurrentItemWithPlayerItem:item];
+        });
+    });
 }
 
 - (void)_toggleScreenOrientation {

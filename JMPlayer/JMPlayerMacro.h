@@ -6,6 +6,8 @@
 //  Copyright © 2016年 jjj2mdd. All rights reserved.
 //
 
+#import <pthread.h>
+
 #ifndef JMPlayerMacro_h
 #define JMPlayerMacro_h
 
@@ -64,5 +66,17 @@
         #endif
     #endif
 #endif
+
+static inline void dispatch_async_on_main_queue(void (^block)()) {
+    if (pthread_main_np()) {
+        block();
+    } else {
+        dispatch_async(dispatch_get_main_queue(), block);
+    }
+}
+
+static inline void dispatch_async_on_global_queue(void (^block)()) {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), block);
+}
 
 #endif /* JMPlayerMacro_h */
