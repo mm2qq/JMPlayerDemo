@@ -33,7 +33,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerStatus) {
 
 @end
 
-@protocol JMPlayerItemDelegate <NSObject>
+@protocol JMPlayerItemProtocol <NSObject>
 
 @property (nullable, nonatomic, copy) NSString *itemTitle;
 @property (nullable, nonatomic, copy) NSString *itemDescription;
@@ -51,7 +51,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerStatus) {
 /**
  *  Player's source, reset will reset the player too
  */
-@property (nonatomic, copy) NSArray<id<JMPlayerItemDelegate>> *items;
+@property (nonatomic, copy) NSArray<id<JMPlayerItemProtocol>> *items;
 
 /**
  *  Initialize a player view with video item
@@ -60,7 +60,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerStatus) {
  *
  *  @return Instance of player view
  */
-- (instancetype)initWithItems:(NSArray<id<JMPlayerItemDelegate>> *)items;
+- (instancetype)initWithItems:(NSArray<id<JMPlayerItemProtocol>> *)items;
 
 /**
  *  Communicate with JMPlayerOverlay instance, do not sign a variable to it

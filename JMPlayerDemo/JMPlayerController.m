@@ -10,7 +10,7 @@
 #import "JMPlayer.h"
 #import "NSDictionary+JMAdd.h"
 
-@interface TestItem : NSObject <JMPlayerItemDelegate>
+@interface TestItem : NSObject <JMPlayerItemProtocol>
 
 @property (nonatomic, copy) NSString *itemTitle;
 @property (nonatomic, copy) NSString *itemDescription;

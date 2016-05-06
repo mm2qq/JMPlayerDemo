@@ -48,7 +48,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
     [self _setupPlayer];
 }
 
-- (instancetype)initWithItems:(NSArray<id<JMPlayerItemDelegate>> *)items {
+- (instancetype)initWithItems:(NSArray<id<JMPlayerItemProtocol>> *)items {
     if (self = [super init]) {
         _items = items.copy;
         [self _setupPlayer];
@@ -122,7 +122,7 @@ typedef NS_ENUM(NSUInteger, JMPlayerPanDirection) {
 
 #pragma mark - Getters & Setters
 
-- (void)setItems:(NSArray<id<JMPlayerItemDelegate>> *)items {
+- (void)setItems:(NSArray<id<JMPlayerItemProtocol>> *)items {
     _items = items.copy;
     [self _setupPlayer];
 }
