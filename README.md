@@ -33,7 +33,7 @@ A simple video player demo based on AVFoundation
 ### Usage
 
 * Firstly, import `JMPlayer.h`
-* Then, create a `JMPlayer` instance with NSArray/NSMutableArray as a parameter which contains object implement `JMPlayerItemDelegate`. For more information about it, see example code at demo.
+* Then, create a `JMPlayer` instance with NSArray/NSMutableArray as a parameter which contains object implement `JMPlayerItemProtocol`. For more information about it, see example code at demo.
 
 ### Bug
 
